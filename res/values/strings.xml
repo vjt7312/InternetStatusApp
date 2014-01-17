@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">InternetStatus</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="url_label">DNS Query</string>
+    <string name="url_default">www.google.com</string>
+    <string name="interval_label">Query interval (seconds)</string>
+    <string name="interval_default">10</string>
 
 </resources>

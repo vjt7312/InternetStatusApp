@@ -41,14 +41,25 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 		mURL.setText(settings.getString("url", getString(R.string.url_default)));
 
-		if (InternetService.isRunning() == true) {
+		if (settings.getString("onoff", getString(R.string.onoff_default))
+				.equals("on")) {
 			mURL.setEnabled(false);
 			mInterval.setEnabled(false);
 			mOnOffButton.setChecked(true);
+			editor.putString("onoff", "on");
+			editor.commit();
+			if (InternetService.isRunning() == false) {
+				startServer();
+			}
 		} else {
 			mURL.setEnabled(true);
 			mInterval.setEnabled(true);
 			mOnOffButton.setChecked(false);
+			editor.putString("onoff", "off");
+			editor.commit();
+			if (InternetService.isRunning() == true) {
+				stopServer();
+			}
 		}
 
 		mInterval.setOnClickListener(new View.OnClickListener() {
@@ -128,12 +139,18 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 			editor.putString("url", mURL.getText().toString());
 			editor.putString("interval", mInterval.getText().toString());
+			editor.putString("onoff", "on");
 			editor.commit();
 
 			mInterval.setEnabled(false);
 			mURL.setEnabled(false);
 			startServer();
 		} else {
+			final SharedPreferences settings = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			final SharedPreferences.Editor editor = settings.edit();
+
+			editor.putString("onoff", "off");
 			mInterval.setEnabled(true);
 			mURL.setEnabled(true);
 			stopServer();

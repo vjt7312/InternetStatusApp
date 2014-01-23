@@ -42,11 +42,11 @@ public class InternetNotifier extends BroadcastReceiver {
 				.getActivity(context, 0, intent, 0);
 
 		Notification noti = new Notification.Builder(context)
-				.setContentTitle(context.getString(status))
+				.setContentTitle(context.getString(R.string.status_title_label))
 				.setContentIntent(pIntent)
 				.setContentText(context.getString(status)).setSmallIcon(icon)
 				.setAutoCancel(false).build();
-		noti.flags = Notification.FLAG_NO_CLEAR ;
+		noti.flags = Notification.FLAG_NO_CLEAR;
 		nm.notify(NOTIFICATIONID, noti);
 
 	}

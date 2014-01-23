@@ -6,9 +6,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="16"
         android:targetSdkVersion="17" />
 
     <application
@@ -32,8 +33,16 @@
             android:name="com.vjt.app.internetstatus.InternetNotifier"
             android:exported="false" >
             <intent-filter>
-                <action android:name="com.vjt.app.internetstatus.SERVER_STARTED" />
-                <action android:name="com.vjt.app.internetstatus.SERVER_STOPPED" />
+                <action android:name="com.vjt.app.internetstatus.ONLINE" />
+                <action android:name="com.vjt.app.internetstatus.OFFLINE" />
+                <action android:name="com.vjt.app.internetstatus.STOPPED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.vjt.app.internetstatus.BootReceiver"
+            android:label="BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>

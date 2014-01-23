@@ -4,10 +4,13 @@
     <string name="app_name">InternetStatus</string>
     <string name="url_label">DNS query URL</string>
     <string name="interval_label">Auto query interval (seconds)</string>
-    <string name="running_state_off_label">Auto query off</string>
-    <string name="running_state_on_label">Auto query on</string>
+    <string name="interval_validation_error">The interval must be in the range 1 to 65535.</string>
+    <string name="url_validation_error">Invalid URL.</string>
+    <string name="status_online_label">Online</string>
+    <string name="status_offline_label">Offline</string>
 
     <!-- Configuration values, do not translate -->
     <string name="url_default">www.google.com</string>
     <string name="interval_default">10</string>
+
 </resources>

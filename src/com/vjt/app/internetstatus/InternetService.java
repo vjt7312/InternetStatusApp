@@ -13,8 +13,8 @@ import android.preference.PreferenceManager;
 
 public class InternetService extends Service {
 
-	static public final String ACTION_STARTED = "com.vjt.app.internetstatus.SERVICE_STARTED";
-	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus.SERVICE_STOPPED";
+	static public final String ACTION_STARTED = "com.vjt.app.internetstatus.STARTED";
+	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus.STOPPED";
 	static public final String ACTION_ONLINE = "com.vjt.app.internetstatus.ONLINE";
 	static public final String ACTION_OFFLINE = "com.vjt.app.internetstatus.OFFLINE";
 

@@ -2,6 +2,7 @@ package com.vjt.app.internetstatus;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +37,16 @@ public class InternetNotifier extends BroadcastReceiver {
 			status = R.string.status_offline_label;
 		}
 
+		Intent intent = new Intent(context, MainActivity.class);
+		PendingIntent pIntent = PendingIntent
+				.getActivity(context, 0, intent, 0);
+
 		Notification noti = new Notification.Builder(context)
 				.setContentTitle(context.getString(status))
+				.setContentIntent(pIntent)
 				.setContentText(context.getString(status)).setSmallIcon(icon)
 				.setAutoCancel(false).build();
+		noti.flags = Notification.FLAG_NO_CLEAR ;
 		nm.notify(NOTIFICATIONID, noti);
 
 	}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">网路状态检查器</string>
+    <string name="url_label">查询网址</string>
+    <string name="interval_label">自动查询间隔 (秒)</string>
+    <string name="interval_validation_error">间隔必须介于1到65535.</string>
+    <string name="url_validation_error">无效的URL.</string>
+    <string name="status_title_label">网络状态</string>
+    <string name="status_online_label">连线</string>
+    <string name="status_offline_label">断线</string>
+
+    <!-- Configuration values, do not translate -->
+    <string name="onoff_default">off</string>
+    <string name="url_default">www.google.com</string>
+    <string name="interval_default">6</string>
+
+</resources>

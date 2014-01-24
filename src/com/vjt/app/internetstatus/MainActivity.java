@@ -48,18 +48,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			mOnOffButton.setChecked(true);
 			editor.putString("onoff", "on");
 			editor.commit();
-			if (InternetService.isRunning() == false) {
-				startServer();
-			}
+			startServer();
 		} else {
 			mURL.setEnabled(true);
 			mInterval.setEnabled(true);
 			mOnOffButton.setChecked(false);
 			editor.putString("onoff", "off");
 			editor.commit();
-			if (InternetService.isRunning() == true) {
-				stopServer();
-			}
+			stopServer();
 		}
 
 		mInterval.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +99,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 	private void startServer() {
 		Intent serverService = new Intent(this, InternetService.class);
-		if (!InternetService.isRunning()) {
-			startService(serverService);
-		}
+		startService(serverService);
 	}
 
 	private void stopServer() {
@@ -151,6 +145,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			final SharedPreferences.Editor editor = settings.edit();
 
 			editor.putString("onoff", "off");
+			editor.commit();
+
 			mInterval.setEnabled(true);
 			mURL.setEnabled(true);
 			stopServer();

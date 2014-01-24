@@ -9,6 +9,7 @@
     <string name="status_title_label">网络状态</string>
     <string name="status_online_label">连线</string>
     <string name="status_offline_label">断线</string>
+    <string name="status_bad_label">差</string>
 
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>

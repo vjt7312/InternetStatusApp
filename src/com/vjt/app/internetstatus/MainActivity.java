@@ -102,17 +102,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 	private void stopServer() {
 		Intent serverService = new Intent(this, InternetService.class);
-		serverService.setAction(InternetService.ACTION_SCREEN_OFF);
+		serverService.setAction(InternetService.ACTION_STOPPED);
 		startService(serverService);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(InternetService.ACTION_STARTED);
-		filter.addAction(InternetService.ACTION_STOPPED);
 	}
 
 	@Override

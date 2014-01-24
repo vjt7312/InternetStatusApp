@@ -13,7 +13,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -26,15 +28,26 @@ public class InternetService extends Service {
 	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus.STOPPED";
 	static public final String ACTION_ONLINE = "com.vjt.app.internetstatus.ONLINE";
 	static public final String ACTION_OFFLINE = "com.vjt.app.internetstatus.OFFLINE";
+	static public final String ACTION_BAD = "com.vjt.app.internetstatus.BAD";
 
 	static public final String ACTION_SCREEN_ON = "screen_on";
 	static public final String ACTION_SCREEN_OFF = "screen_off";
 
-	private static final int STATUS_NONE = 0;
-	private static final int STATUS_ON = 1;
-	private static final int STATUS_OFF = 2;
+	static public final int STATUS_NONE = 0;
+	static public final int STATUS_ON = 1;
+	static public final int STATUS_OFF = 2;
+	static public final int STATUS_BAD = 3;
+
+	static public final int STATE_NONE = 0;
+	static public final int STATE_WAITING = 1;
+
+	private static final int MSG_CHECK_TIMEOUT = 1;
 
 	private static int serviceStatus = STATUS_NONE;
+	private static int serviceState = STATE_NONE;
+	private static boolean isThisTimeBad;
+
+	private final Handler mHandler = new MainHandler();
 	private static int mInterval;
 	private static String mURL;
 
@@ -104,25 +117,31 @@ public class InternetService extends Service {
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 
 		registerReceiver(receiver, filter);
+		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
+		cancelWatchdog();
 
-		if (intent.getAction() != null
-				&& intent.getAction().equals(ACTION_SCREEN_OFF)) {
-			cancelWatchdog();
-			stopSelf(startId);
-			return START_NOT_STICKY;
-		} else {
+		if (intent.getAction() == null
+				|| intent.getAction().equals(ACTION_SCREEN_ON)) {
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(this);
 
 			mInterval = Integer.valueOf(settings.getString("interval",
 					getString(R.string.interval_default)));
 			mURL = settings.getString("url", getString(R.string.url_default));
-			doCheck();
+			synchronized (this) {
+				serviceState = STATE_WAITING;
+				isThisTimeBad = false;
+				mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT, Integer
+						.valueOf(getString(R.string.bad_interval_default)));
+				doCheck();
+				serviceState = STATE_NONE;
+			}
 			setWatchdog(mInterval * 1000);
-			stopSelf(startId);
-
-			return START_NOT_STICKY;
+		} else if (intent.getAction().equals(ACTION_STOPPED)) {
+			resetStatus();
 		}
+		// stopSelf(startId);
+		return START_REDELIVER_INTENT;
 	}
 
 	PendingIntent createAlarmIntent() {
@@ -149,6 +168,21 @@ public class InternetService extends Service {
 		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
 	}
 
+	private void doBadCheck() {
+		if (serviceState == STATE_WAITING) {
+			if (serviceStatus != STATUS_BAD)
+				sendBroadcast(new Intent(ACTION_BAD));
+			serviceStatus = STATUS_BAD;
+			isThisTimeBad = true;
+			Log.d(TAG, "Bad connection !!!");
+		}
+	}
+
+	private void resetStatus() {
+		serviceStatus = STATUS_NONE;
+		cancelWatchdog();
+	}
+
 	private void doCheck() {
 		String netAddress = null;
 
@@ -159,9 +193,11 @@ public class InternetService extends Service {
 					sendBroadcast(new Intent(ACTION_OFFLINE));
 				serviceStatus = STATUS_OFF;
 			} else {
-				if (serviceStatus != STATUS_ON)
-					sendBroadcast(new Intent(ACTION_ONLINE));
-				serviceStatus = STATUS_ON;
+				if (!isThisTimeBad) {
+					if (serviceStatus != STATUS_ON)
+						sendBroadcast(new Intent(ACTION_ONLINE));
+					serviceStatus = STATUS_ON;
+				}
 				Log.d(TAG, netAddress);
 			}
 		} catch (Exception e) {
@@ -173,7 +209,19 @@ public class InternetService extends Service {
 
 	@Override
 	public void onDestroy() {
+		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
+	}
+
+	private class MainHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MSG_CHECK_TIMEOUT:
+				doBadCheck();
+				break;
+			}
+		}
 	}
 
 }

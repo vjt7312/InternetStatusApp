@@ -14,27 +14,42 @@ public class InternetNotifier extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(InternetService.ACTION_ONLINE)) {
-			setupNotification(context, true);
+			setupNotification(context, InternetService.STATUS_ON);
 		} else if (intent.getAction().equals(InternetService.ACTION_OFFLINE)) {
-			setupNotification(context, false);
+			setupNotification(context, InternetService.STATUS_OFF);
+		} else if (intent.getAction().equals(InternetService.ACTION_BAD)) {
+			setupNotification(context, InternetService.STATUS_BAD);
 		} else if (intent.getAction().equals(InternetService.ACTION_STOPPED)) {
 			clearNotification(context);
 		}
 
 	}
 
-	private void setupNotification(Context context, boolean online) {
+	private void setupNotification(Context context, int status) {
 		String ns = Context.NOTIFICATION_SERVICE;
-		int icon, status;
+		int icon, status_label;
 
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(ns);
-		if (online) {
+
+		switch (status) {
+		case InternetService.STATUS_ON:
 			icon = R.drawable.online;
-			status = R.string.status_online_label;
-		} else {
+			status_label = R.string.status_online_label;
+			break;
+		case InternetService.STATUS_OFF:
 			icon = R.drawable.offline;
-			status = R.string.status_offline_label;
+			status_label = R.string.status_offline_label;
+			break;
+		case InternetService.STATUS_BAD:
+			icon = R.drawable.bad;
+			status_label = R.string.status_bad_label;
+			break;
+		default:
+			icon = R.drawable.offline;
+			status_label = R.string.status_offline_label;
+			break;
+
 		}
 
 		Intent intent = new Intent(context, MainActivity.class);
@@ -44,8 +59,8 @@ public class InternetNotifier extends BroadcastReceiver {
 		Notification noti = new Notification.Builder(context)
 				.setContentTitle(context.getString(R.string.status_title_label))
 				.setContentIntent(pIntent)
-				.setContentText(context.getString(status)).setSmallIcon(icon)
-				.setAutoCancel(false).build();
+				.setContentText(context.getString(status_label))
+				.setSmallIcon(icon).setAutoCancel(false).build();
 		noti.flags = Notification.FLAG_NO_CLEAR;
 		nm.notify(NOTIFICATIONID, noti);
 

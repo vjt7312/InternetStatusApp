@@ -9,10 +9,12 @@
     <string name="status_title_label">Internet status</string>
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">Offline</string>
+    <string name="status_bad_label">Bad</string>
 
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>
     <string name="interval_default">6</string>
+    <string name="bad_interval_default">3</string>
 
 </resources>

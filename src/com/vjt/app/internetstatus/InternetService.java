@@ -3,6 +3,8 @@ package com.vjt.app.internetstatus;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,9 +13,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -29,14 +30,11 @@ public class InternetService extends Service {
 	static public final String ACTION_SCREEN_ON = "screen_on";
 	static public final String ACTION_SCREEN_OFF = "screen_off";
 
-	private static final int MSG_CHECK_TIMEOUT = 1;
-
-	private static final int STATUS_STOP = 0;
+	private static final int STATUS_NONE = 0;
 	private static final int STATUS_ON = 1;
 	private static final int STATUS_OFF = 2;
 
-	private static int serviceStatus;
-	private final Handler mHandler = new MainHandler();
+	private static int serviceStatus = STATUS_NONE;
 	private static int mInterval;
 	private static String mURL;
 
@@ -99,7 +97,6 @@ public class InternetService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		Log.d(TAG, "onStartCommand");
 		sendBroadcast(new Intent(ACTION_STARTED));
 
 		IntentFilter filter = new IntentFilter();
@@ -110,8 +107,9 @@ public class InternetService extends Service {
 
 		if (intent.getAction() != null
 				&& intent.getAction().equals(ACTION_SCREEN_OFF)) {
-			mHandler.removeMessages(MSG_CHECK_TIMEOUT);
-			return START_REDELIVER_INTENT;
+			cancelWatchdog();
+			stopSelf(startId);
+			return START_NOT_STICKY;
 		} else {
 			SharedPreferences settings = PreferenceManager
 					.getDefaultSharedPreferences(this);
@@ -120,15 +118,40 @@ public class InternetService extends Service {
 					getString(R.string.interval_default)));
 			mURL = settings.getString("url", getString(R.string.url_default));
 			doCheck();
+			setWatchdog(mInterval * 1000);
+			stopSelf(startId);
 
-			return START_REDELIVER_INTENT;
+			return START_NOT_STICKY;
 		}
+	}
+
+	PendingIntent createAlarmIntent() {
+		Intent i = new Intent();
+		i.setClass(this, InternetService.class);
+		PendingIntent pi = PendingIntent.getService(this, 0, i,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+		return pi;
+	}
+
+	private void cancelWatchdog() {
+		PendingIntent pi = createAlarmIntent();
+		AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarmMgr.cancel(pi);
+	}
+
+	private void setWatchdog(int delay) {
+		PendingIntent pi = createAlarmIntent();
+		long timeNow = SystemClock.elapsedRealtime();
+
+		long nextCheckTime = timeNow + delay;
+		AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
 	}
 
 	private void doCheck() {
 		String netAddress = null;
 
-		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		try {
 			netAddress = new NetTask().execute(mURL).get();
 			if (netAddress == null) {
@@ -146,31 +169,11 @@ public class InternetService extends Service {
 				sendBroadcast(new Intent(ACTION_OFFLINE));
 			serviceStatus = STATUS_OFF;
 		}
-		mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT, mInterval * 1000);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
-		serviceStatus = STATUS_STOP;
-		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
-		sendBroadcast(new Intent(ACTION_STOPPED));
 		unregisterReceiver(receiver);
-	}
-
-	public static boolean isRunning() {
-		return serviceStatus != STATUS_STOP;
-	}
-
-	private class MainHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_CHECK_TIMEOUT:
-				doCheck();
-				break;
-			}
-		}
 	}
 
 }

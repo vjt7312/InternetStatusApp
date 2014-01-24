@@ -1,8 +1,6 @@
 package com.vjt.app.internetstatus;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -48,18 +46,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			mOnOffButton.setChecked(true);
 			editor.putString("onoff", "on");
 			editor.commit();
-			if (InternetService.isRunning() == false) {
-				startServer();
-			}
+			startServer();
 		} else {
 			mURL.setEnabled(true);
 			mInterval.setEnabled(true);
 			mOnOffButton.setChecked(false);
 			editor.putString("onoff", "off");
 			editor.commit();
-			if (InternetService.isRunning() == true) {
-				stopServer();
-			}
+			stopServer();
 		}
 
 		mInterval.setOnClickListener(new View.OnClickListener() {
@@ -103,14 +97,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 	private void startServer() {
 		Intent serverService = new Intent(this, InternetService.class);
-		if (!InternetService.isRunning()) {
-			startService(serverService);
-		}
+		startService(serverService);
 	}
 
 	private void stopServer() {
 		Intent serverService = new Intent(this, InternetService.class);
-		stopService(serverService);
+		serverService.setAction(InternetService.ACTION_SCREEN_OFF);
+		startService(serverService);
 	}
 
 	@Override
@@ -120,14 +113,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(InternetService.ACTION_STARTED);
 		filter.addAction(InternetService.ACTION_STOPPED);
-		registerReceiver(serverReceiver, filter);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		unregisterReceiver(serverReceiver);
 	}
 
 	@Override
@@ -151,27 +136,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			final SharedPreferences.Editor editor = settings.edit();
 
 			editor.putString("onoff", "off");
+			editor.commit();
+
 			mInterval.setEnabled(true);
 			mURL.setEnabled(true);
+			sendBroadcast(new Intent(InternetService.ACTION_STOPPED));
 			stopServer();
 		}
 
 	}
-
-	BroadcastReceiver serverReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(InternetService.ACTION_STARTED)) {
-				mOnOffButton.setChecked(true);
-				mInterval.setEnabled(false);
-				mURL.setEnabled(false);
-			} else if (intent.getAction()
-					.equals(InternetService.ACTION_STOPPED)) {
-				mOnOffButton.setChecked(false);
-				mInterval.setEnabled(true);
-				mURL.setEnabled(true);
-			}
-		}
-	};
 
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Internet Status Checker</string>
-    <string name="url_label">Query URL</string>
+    <string name="app_name">Internet Status</string>
+    <string name="url_label">DNS query URL</string>
     <string name="interval_label">Auto query interval (seconds)</string>
     <string name="interval_validation_error">The interval must be in the range 1 to 65535.</string>
     <string name="url_validation_error">Invalid URL.</string>

@@ -12,12 +12,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class InternetService extends Service {
+public class InternetService extends Service implements Callback {
 
 	private static final String TAG = "InternetService";
 
@@ -36,7 +37,7 @@ public class InternetService extends Service {
 	private static final int STATUS_OFF = 2;
 
 	private static int serviceStatus;
-	private final Handler mHandler = new MainHandler();
+	private Handler mHandler = new Handler(this);
 	private static int mInterval;
 	private static String mURL;
 
@@ -99,7 +100,6 @@ public class InternetService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		Log.d(TAG, "onStartCommand");
 		sendBroadcast(new Intent(ACTION_STARTED));
 
 		IntentFilter filter = new IntentFilter();
@@ -120,6 +120,9 @@ public class InternetService extends Service {
 					getString(R.string.interval_default)));
 			mURL = settings.getString("url", getString(R.string.url_default));
 			doCheck();
+
+			mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT,
+					mInterval * 1000);
 
 			return START_REDELIVER_INTENT;
 		}
@@ -151,7 +154,6 @@ public class InternetService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
 		serviceStatus = STATUS_STOP;
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		sendBroadcast(new Intent(ACTION_STOPPED));
@@ -162,15 +164,16 @@ public class InternetService extends Service {
 		return serviceStatus != STATUS_STOP;
 	}
 
-	private class MainHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_CHECK_TIMEOUT:
-				doCheck();
-				break;
-			}
+	@Override
+	public boolean handleMessage(Message msg) {
+		switch (msg.what) {
+		case MSG_CHECK_TIMEOUT:
+			doCheck();
+			break;
+		default:
+			return false;
 		}
+		return true;
 	}
 
 }

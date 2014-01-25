@@ -173,7 +173,7 @@ public class InternetService extends Service {
 	}
 
 	private void doBadCheck() {
-		if (serviceState == STATE_WAITING) {
+		if (serviceState == STATE_WAITING && serviceStatus == STATUS_ON) {
 			if (serviceStatus != STATUS_BAD)
 				sendBroadcast(new Intent(ACTION_BAD));
 			serviceStatus = STATUS_BAD;

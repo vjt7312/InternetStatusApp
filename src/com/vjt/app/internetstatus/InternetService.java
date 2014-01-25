@@ -18,7 +18,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class InternetService extends Service {
 
@@ -173,7 +172,7 @@ public class InternetService extends Service {
 	}
 
 	private void doBadCheck() {
-		if (serviceState == STATE_WAITING) {
+		if (serviceState == STATE_WAITING && serviceStatus == STATUS_ON) {
 			if (serviceStatus != STATUS_BAD)
 				sendBroadcast(new Intent(ACTION_BAD));
 			serviceStatus = STATUS_BAD;

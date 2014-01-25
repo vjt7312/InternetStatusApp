@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Internet Status Checker</string>
+    <string name="app_name">Internet Status Monitor</string>
     <string name="url_label">Query URL</string>
     <string name="interval_label">Auto query interval (seconds)</string>
     <string name="interval_validation_error">The interval must be in the range 1 to 65535.</string>
@@ -14,7 +14,7 @@
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>
-    <string name="interval_default">6</string>
-    <string name="bad_interval_default">3</string>
+    <string name="interval_default">5</string>
+    <string name="bad_interval_default">1</string>
 
 </resources>

@@ -75,7 +75,15 @@ public class InternetService extends Service {
 		protected String doInBackground(String... params) {
 			InetAddress addr = null;
 			try {
-				addr = InetAddress.getByName(params[0]);
+				synchronized (this) {
+					serviceState = STATE_WAITING;
+					mHandler.sendEmptyMessageDelayed(
+							MSG_CHECK_TIMEOUT,
+							Integer.valueOf(getString(R.string.bad_interval_default)) * 1000);
+
+					addr = InetAddress.getByName(params[0]);
+					serviceState = STATE_NONE;
+				}
 			}
 
 			catch (UnknownHostException e) {
@@ -128,14 +136,10 @@ public class InternetService extends Service {
 			mInterval = Integer.valueOf(settings.getString("interval",
 					getString(R.string.interval_default)));
 			mURL = settings.getString("url", getString(R.string.url_default));
-			synchronized (this) {
-				serviceState = STATE_WAITING;
-				isThisTimeBad = false;
-				mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT, Integer
-						.valueOf(getString(R.string.bad_interval_default)));
-				doCheck();
-				serviceState = STATE_NONE;
-			}
+
+			isThisTimeBad = false;
+			doCheck();
+
 			setWatchdog(mInterval * 1000);
 		} else if (intent.getAction().equals(ACTION_STOPPED)) {
 			resetStatus();
@@ -187,11 +191,14 @@ public class InternetService extends Service {
 		String netAddress = null;
 
 		try {
+
 			netAddress = new NetTask().execute(mURL).get();
+
 			if (netAddress == null) {
 				if (serviceStatus != STATUS_OFF)
 					sendBroadcast(new Intent(ACTION_OFFLINE));
 				serviceStatus = STATUS_OFF;
+				Log.d(TAG, "Offline !!!");
 			} else {
 				if (!isThisTimeBad) {
 					if (serviceStatus != STATUS_ON)
@@ -204,6 +211,7 @@ public class InternetService extends Service {
 			if (serviceStatus != STATUS_OFF)
 				sendBroadcast(new Intent(ACTION_OFFLINE));
 			serviceStatus = STATUS_OFF;
+			Log.d(TAG, "Offline !!!");
 		}
 	}
 

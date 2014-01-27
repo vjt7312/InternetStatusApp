@@ -223,6 +223,7 @@ public class InternetService extends Service {
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
+		startService(new Intent(this, InternetService.class));
 	}
 
 	private class MainHandler extends Handler {

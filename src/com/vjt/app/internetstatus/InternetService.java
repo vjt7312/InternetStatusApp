@@ -136,7 +136,7 @@ public class InternetService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		super.onStartCommand(intent, flags, startId);
 		sendBroadcast(new Intent(ACTION_STARTED));
 
 		IntentFilter filter = new IntentFilter();
@@ -220,6 +220,7 @@ public class InternetService extends Service {
 
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);

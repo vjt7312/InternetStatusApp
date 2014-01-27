@@ -1,5 +1,6 @@
 package com.vjt.app.internetstatus;
 
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -18,6 +19,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class InternetService extends Service {
 
@@ -46,7 +48,7 @@ public class InternetService extends Service {
 	private static int serviceState = STATE_NONE;
 	private static boolean isThisTimeBad;
 
-	private final Handler mHandler = new MainHandler();
+	private final Handler mHandler = new MainHandler(this);
 	private static int mInterval;
 	private static String mURL;
 
@@ -83,12 +85,30 @@ public class InternetService extends Service {
 					addr = InetAddress.getByName(params[0]);
 					serviceState = STATE_NONE;
 				}
-			}
-
-			catch (UnknownHostException e) {
+			} catch (UnknownHostException e) {
+				return null;
+			} catch (Exception e) {
 				return null;
 			}
 			return addr.getHostAddress();
+		}
+
+		@Override
+		protected void onPostExecute(String netAddress) {
+			if (netAddress == null) {
+				if (serviceStatus != STATUS_OFF)
+					sendBroadcast(new Intent(ACTION_OFFLINE));
+				serviceStatus = STATUS_OFF;
+				Log.d(TAG, "Offline !!!");
+			} else {
+				if (!isThisTimeBad) {
+					if (serviceStatus != STATUS_ON)
+						sendBroadcast(new Intent(ACTION_ONLINE));
+					serviceStatus = STATUS_ON;
+				}
+				Log.d(TAG, netAddress);
+			}
+			setWatchdog(mInterval * 1000);
 		}
 	}
 
@@ -102,11 +122,11 @@ public class InternetService extends Service {
 			Intent serviceIntent = new Intent(context, InternetService.class);
 
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-				// Log.d(TAG, "Receive Screen on");
+				Log.d(TAG, "Receive Screen on");
 				serviceIntent.setAction(ACTION_SCREEN_ON);
 				startService(serviceIntent);
 			} else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-				// Log.d(TAG, "Receive Screen off");
+				Log.d(TAG, "Receive Screen off");
 				serviceIntent.setAction(ACTION_SCREEN_OFF);
 				startService(serviceIntent);
 			}
@@ -138,8 +158,6 @@ public class InternetService extends Service {
 
 			isThisTimeBad = false;
 			doCheck();
-
-			setWatchdog(mInterval * 1000);
 		} else if (intent.getAction().equals(ACTION_STOPPED)) {
 			resetStatus();
 		}
@@ -171,13 +189,13 @@ public class InternetService extends Service {
 		alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextCheckTime, pi);
 	}
 
-	private void doBadCheck() {
+	private void doBadCheck(Context service) {
 		if (serviceState == STATE_WAITING && serviceStatus == STATUS_ON) {
-			if (serviceStatus != STATUS_BAD)
-				sendBroadcast(new Intent(ACTION_BAD));
+			if (serviceStatus != STATUS_BAD && service != null)
+				service.sendBroadcast(new Intent(ACTION_BAD));
 			serviceStatus = STATUS_BAD;
 			isThisTimeBad = true;
-			// Log.d(TAG, "Bad connection !!!");
+			Log.d(TAG, "Bad connection !!!");
 		}
 	}
 
@@ -187,45 +205,40 @@ public class InternetService extends Service {
 	}
 
 	private void doCheck() {
-		String netAddress = null;
 
 		try {
 
-			netAddress = new NetTask().execute(mURL).get();
+			new NetTask().execute(mURL);
 
-			if (netAddress == null) {
-				if (serviceStatus != STATUS_OFF)
-					sendBroadcast(new Intent(ACTION_OFFLINE));
-				serviceStatus = STATUS_OFF;
-				// Log.d(TAG, "Offline !!!");
-			} else {
-				if (!isThisTimeBad) {
-					if (serviceStatus != STATUS_ON)
-						sendBroadcast(new Intent(ACTION_ONLINE));
-					serviceStatus = STATUS_ON;
-				}
-				// Log.d(TAG, netAddress);
-			}
 		} catch (Exception e) {
 			if (serviceStatus != STATUS_OFF)
 				sendBroadcast(new Intent(ACTION_OFFLINE));
 			serviceStatus = STATUS_OFF;
-			// Log.d(TAG, "Offline !!!");
+			Log.d(TAG, "Offline !!!");
 		}
 	}
 
 	@Override
 	public void onDestroy() {
+		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
 	}
 
 	private class MainHandler extends Handler {
+		private final WeakReference<InternetService> mService;
+
+		MainHandler(InternetService service) {
+			mService = new WeakReference<InternetService>(service);
+		}
+
 		@Override
 		public void handleMessage(Message msg) {
+			InternetService service = mService.get();
+
 			switch (msg.what) {
 			case MSG_CHECK_TIMEOUT:
-				doBadCheck();
+				doBadCheck(service);
 				break;
 			}
 		}

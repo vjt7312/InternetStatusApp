@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class InternetNotifier extends BroadcastReceiver {
 
@@ -15,7 +14,7 @@ public class InternetNotifier extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, "Action is: " + intent.getAction());
+		// Log.d(TAG, "Action is: " + intent.getAction());
 		if (intent.getAction().equals(InternetService.ACTION_ONLINE)) {
 			setupNotification(context, InternetService.STATUS_ON);
 		} else if (intent.getAction().equals(InternetService.ACTION_OFFLINE)) {

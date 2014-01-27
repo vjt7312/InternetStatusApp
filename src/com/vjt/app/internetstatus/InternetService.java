@@ -19,7 +19,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class InternetService extends Service {
 
@@ -99,14 +98,14 @@ public class InternetService extends Service {
 				if (serviceStatus != STATUS_OFF)
 					sendBroadcast(new Intent(ACTION_OFFLINE));
 				serviceStatus = STATUS_OFF;
-				Log.d(TAG, "Offline !!!");
+				// Log.d(TAG, "Offline !!!");
 			} else {
 				if (!isThisTimeBad) {
 					if (serviceStatus != STATUS_ON)
 						sendBroadcast(new Intent(ACTION_ONLINE));
 					serviceStatus = STATUS_ON;
 				}
-				Log.d(TAG, netAddress);
+				// Log.d(TAG, netAddress);
 			}
 			setWatchdog(mInterval * 1000);
 		}
@@ -122,11 +121,11 @@ public class InternetService extends Service {
 			Intent serviceIntent = new Intent(context, InternetService.class);
 
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-				Log.d(TAG, "Receive Screen on");
+				// Log.d(TAG, "Receive Screen on");
 				serviceIntent.setAction(ACTION_SCREEN_ON);
 				startService(serviceIntent);
 			} else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-				Log.d(TAG, "Receive Screen off");
+				// Log.d(TAG, "Receive Screen off");
 				serviceIntent.setAction(ACTION_SCREEN_OFF);
 				startService(serviceIntent);
 			}
@@ -195,7 +194,7 @@ public class InternetService extends Service {
 				service.sendBroadcast(new Intent(ACTION_BAD));
 			serviceStatus = STATUS_BAD;
 			isThisTimeBad = true;
-			Log.d(TAG, "Bad connection !!!");
+			// Log.d(TAG, "Bad connection !!!");
 		}
 	}
 
@@ -214,7 +213,7 @@ public class InternetService extends Service {
 			if (serviceStatus != STATUS_OFF)
 				sendBroadcast(new Intent(ACTION_OFFLINE));
 			serviceStatus = STATUS_OFF;
-			Log.d(TAG, "Offline !!!");
+			// Log.d(TAG, "Offline !!!");
 		}
 	}
 

@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -51,23 +50,9 @@ public class InternetService extends Service {
 	private static int mInterval;
 	private static String mURL;
 
-	private final IBinder binder = new InternetServiceBinder();
-
-	public class InternetServiceBinder extends Binder {
-
-		/**
-		 * Gets the service.
-		 * 
-		 * @return the service
-		 */
-		public InternetServiceBinder getService() {
-			return InternetServiceBinder.this;
-		}
-	}
-
 	@Override
 	public IBinder onBind(Intent arg0) {
-		return binder;
+		return null;
 	}
 
 	public class NetTask extends AsyncTask<String, Integer, String> {
@@ -135,7 +120,7 @@ public class InternetService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+		super.onStartCommand(intent, flags, startId);
 		sendBroadcast(new Intent(ACTION_STARTED));
 
 		IntentFilter filter = new IntentFilter();
@@ -219,6 +204,7 @@ public class InternetService extends Service {
 
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);

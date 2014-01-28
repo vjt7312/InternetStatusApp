@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -19,7 +21,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class InternetService extends Service {
 
@@ -43,6 +44,8 @@ public class InternetService extends Service {
 	static public final int STATE_WAITING = 1;
 
 	private static final int MSG_CHECK_TIMEOUT = 1;
+
+	private final int NOTIFICATIONID = 7696;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
@@ -71,6 +74,55 @@ public class InternetService extends Service {
 		return binder;
 	}
 
+	private void setupNotification(Context context, int status) {
+		String ns = Context.NOTIFICATION_SERVICE;
+		int icon, status_label;
+
+		NotificationManager nm = (NotificationManager) context
+				.getSystemService(ns);
+
+		switch (status) {
+		case InternetService.STATUS_ON:
+			icon = R.drawable.online;
+			status_label = R.string.status_online_label;
+			break;
+		case InternetService.STATUS_OFF:
+			icon = R.drawable.offline;
+			status_label = R.string.status_offline_label;
+			break;
+		case InternetService.STATUS_BAD:
+			icon = R.drawable.bad;
+			status_label = R.string.status_bad_label;
+			break;
+		default:
+			icon = R.drawable.offline;
+			status_label = R.string.status_offline_label;
+			break;
+
+		}
+
+		Intent intent = new Intent(context, MainActivity.class);
+		PendingIntent pIntent = PendingIntent
+				.getActivity(context, 0, intent, 0);
+
+		Notification noti = new Notification.Builder(context)
+				.setContentTitle(context.getString(R.string.status_title_label))
+				.setContentIntent(pIntent)
+				.setContentText(context.getString(status_label))
+				.setSmallIcon(icon).setAutoCancel(false).build();
+		noti.flags = Notification.FLAG_NO_CLEAR;
+		nm.notify(NOTIFICATIONID, noti);
+		startForeground(NOTIFICATIONID, noti);
+
+	}
+
+	private void clearNotification(Context context) {
+		String ns = Context.NOTIFICATION_SERVICE;
+		NotificationManager nm = (NotificationManager) context
+				.getSystemService(ns);
+		nm.cancelAll();
+	}
+
 	public class NetTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {
@@ -97,16 +149,18 @@ public class InternetService extends Service {
 		protected void onPostExecute(String netAddress) {
 			if (netAddress == null) {
 				if (serviceStatus != STATUS_OFF)
-					sendBroadcast(new Intent(ACTION_OFFLINE));
+					setupNotification(InternetService.this,
+							InternetService.STATUS_OFF);
 				serviceStatus = STATUS_OFF;
-				Log.d(TAG, "Offline !!!");
+				LogUtil.d(TAG, "Offline !!!");
 			} else {
 				if (!isThisTimeBad) {
 					if (serviceStatus != STATUS_ON)
-						sendBroadcast(new Intent(ACTION_ONLINE));
+						setupNotification(InternetService.this,
+								InternetService.STATUS_ON);
 					serviceStatus = STATUS_ON;
 				}
-				Log.d(TAG, netAddress);
+				LogUtil.d(TAG, netAddress);
 			}
 			setWatchdog(mInterval * 1000);
 		}
@@ -122,11 +176,11 @@ public class InternetService extends Service {
 			Intent serviceIntent = new Intent(context, InternetService.class);
 
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-				Log.d(TAG, "Receive Screen on");
+				LogUtil.d(TAG, "Receive Screen on");
 				serviceIntent.setAction(ACTION_SCREEN_ON);
 				startService(serviceIntent);
 			} else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-				Log.d(TAG, "Receive Screen off");
+				LogUtil.d(TAG, "Receive Screen off");
 				serviceIntent.setAction(ACTION_SCREEN_OFF);
 				startService(serviceIntent);
 			}
@@ -135,15 +189,18 @@ public class InternetService extends Service {
 	};
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		super.onStartCommand(intent, flags, startId);
-		sendBroadcast(new Intent(ACTION_STARTED));
-
+	public void onCreate() {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 
 		registerReceiver(receiver, filter);
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
+
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		cancelWatchdog();
 
@@ -159,9 +216,13 @@ public class InternetService extends Service {
 			isThisTimeBad = false;
 			doCheck();
 		} else if (intent.getAction().equals(ACTION_STOPPED)) {
+			stopSelf(startId);
+			return START_NOT_STICKY;
+		} else if (intent.getAction().equals(ACTION_SCREEN_OFF)) {
 			resetStatus();
+			return START_REDELIVER_INTENT;
 		}
-		// stopSelf(startId);
+		sendBroadcast(new Intent(ACTION_STARTED));
 		return START_REDELIVER_INTENT;
 	}
 
@@ -192,16 +253,17 @@ public class InternetService extends Service {
 	private void doBadCheck(Context service) {
 		if (serviceState == STATE_WAITING && serviceStatus == STATUS_ON) {
 			if (serviceStatus != STATUS_BAD && service != null)
-				service.sendBroadcast(new Intent(ACTION_BAD));
+				setupNotification(this, InternetService.STATUS_BAD);
 			serviceStatus = STATUS_BAD;
 			isThisTimeBad = true;
-			Log.d(TAG, "Bad connection !!!");
+			LogUtil.d(TAG, "Bad connection !!!");
 		}
 	}
 
 	private void resetStatus() {
 		serviceStatus = STATUS_NONE;
 		cancelWatchdog();
+		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 	}
 
 	private void doCheck() {
@@ -214,7 +276,7 @@ public class InternetService extends Service {
 			if (serviceStatus != STATUS_OFF)
 				sendBroadcast(new Intent(ACTION_OFFLINE));
 			serviceStatus = STATUS_OFF;
-			Log.d(TAG, "Offline !!!");
+			LogUtil.d(TAG, "Offline !!!");
 		}
 	}
 
@@ -224,7 +286,8 @@ public class InternetService extends Service {
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
-		startService(new Intent(this, InternetService.class));
+		clearNotification(this);
+		stopForeground(true);
 	}
 
 	private class MainHandler extends Handler {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.vjt.app.internetstatus"
-    android:versionCode="6"
+    android:versionCode="7"
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -35,16 +35,6 @@
             android:name="com.vjt.app.internetstatus.InternetService"
             android:enabled="true" />
 
-        <receiver
-            android:name="com.vjt.app.internetstatus.InternetNotifier"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.vjt.app.internetstatus.ONLINE" />
-                <action android:name="com.vjt.app.internetstatus.OFFLINE" />
-                <action android:name="com.vjt.app.internetstatus.BAD" />
-                <action android:name="com.vjt.app.internetstatus.STOPPED" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name="com.vjt.app.internetstatus.BootReceiver"
             android:label="BootReceiver" >

@@ -2,7 +2,6 @@ package com.vjt.app.internetstatus;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -131,7 +130,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 			mInterval.setEnabled(true);
 			mURL.setEnabled(true);
-			sendBroadcast(new Intent(InternetService.ACTION_STOPPED));
 			stopServer();
 		}
 

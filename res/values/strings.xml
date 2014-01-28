@@ -14,7 +14,7 @@
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>
-    <string name="interval_default">5</string>
+    <string name="interval_default">4</string>
     <string name="bad_interval_default">1</string>
 
 </resources>

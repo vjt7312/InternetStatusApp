@@ -160,7 +160,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 			mInterval.setEnabled(true);
 			mURL.setEnabled(true);
-			sendBroadcast(new Intent(InternetService.ACTION_STOPPED));
 			stopServer();
 		}
 

@@ -1,4 +1,4 @@
-package com.vjt.app.internetstatus;
+package com.vjt.app.internetstatus_pro;
 
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -22,15 +22,17 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
+import com.vjt.app.internetstatus_pro.NetworkConnectivityListener.State;
+
 public class InternetService extends Service {
 
 	private static final String TAG = "InternetService";
 
-	static public final String ACTION_STARTED = "com.vjt.app.internetstatus.STARTED";
-	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus.STOPPED";
-	static public final String ACTION_ONLINE = "com.vjt.app.internetstatus.ONLINE";
-	static public final String ACTION_OFFLINE = "com.vjt.app.internetstatus.OFFLINE";
-	static public final String ACTION_BAD = "com.vjt.app.internetstatus.BAD";
+	static public final String ACTION_STARTED = "com.vjt.app.internetstatus_pro.STARTED";
+	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus_pro.STOPPED";
+	static public final String ACTION_ONLINE = "com.vjt.app.internetstatus_pro.ONLINE";
+	static public final String ACTION_OFFLINE = "com.vjt.app.internetstatus_pro.OFFLINE";
+	static public final String ACTION_BAD = "com.vjt.app.internetstatus_pro.BAD";
 
 	static public final String ACTION_SCREEN_ON = "screen_on";
 	static public final String ACTION_SCREEN_OFF = "screen_off";
@@ -44,16 +46,21 @@ public class InternetService extends Service {
 	static public final int STATE_WAITING = 1;
 
 	private static final int MSG_CHECK_TIMEOUT = 1;
+	private static final int MSG_NETWORK_CHANGED = 2;
 
 	private final int NOTIFICATIONID = 7696;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
+	private static State mConnectivityState = State.UNKNOWN;
 	private static boolean isThisTimeBad;
 
 	private final Handler mHandler = new MainHandler(this);
 	private static int mInterval;
 	private static String mURL;
+
+	// pro
+	private static NetworkConnectivityListener mNetworkConnectivityListener;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -193,8 +200,13 @@ public class InternetService extends Service {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-
 		registerReceiver(receiver, filter);
+
+		// pro
+		mNetworkConnectivityListener = new NetworkConnectivityListener();
+		mNetworkConnectivityListener.registerHandler(mHandler,
+				MSG_NETWORK_CHANGED);
+		mNetworkConnectivityListener.startListening(this);
 	}
 
 	@Override
@@ -283,11 +295,26 @@ public class InternetService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
+		// pro
+		mNetworkConnectivityListener.unregisterHandler(mHandler);
+		mNetworkConnectivityListener.stopListening();
+		mNetworkConnectivityListener = null;
+
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
 		clearNotification(this);
 		stopForeground(true);
+	}
+
+	private void handleNetworkChange() {
+		if (mConnectivityState == State.CONNECTED) {
+			Intent serverService = new Intent(this, InternetService.class);
+			startService(serverService);
+		} else {
+			resetStatus();
+		}
 	}
 
 	private class MainHandler extends Handler {
@@ -304,6 +331,14 @@ public class InternetService extends Service {
 			switch (msg.what) {
 			case MSG_CHECK_TIMEOUT:
 				doBadCheck(service);
+				break;
+			// pro
+			case MSG_NETWORK_CHANGED:
+				if (mNetworkConnectivityListener != null) {
+					mConnectivityState = mNetworkConnectivityListener
+							.getState();
+					handleNetworkChange();
+				}
 				break;
 			}
 		}

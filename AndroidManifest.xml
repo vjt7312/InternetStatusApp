@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vjt.app.internetstatus"
+    package="com.vjt.app.internetstatus_pro"
     android:versionCode="7"
     android:versionName="1.0" >
 
@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.vjt.app.internetstatus.MainActivity"
+            android:name="com.vjt.app.internetstatus_pro.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,11 +32,11 @@
         </activity>
 
         <service
-            android:name="com.vjt.app.internetstatus.InternetService"
+            android:name="com.vjt.app.internetstatus_pro.InternetService"
             android:enabled="true" />
 
         <receiver
-            android:name="com.vjt.app.internetstatus.BootReceiver"
+            android:name="com.vjt.app.internetstatus_pro.BootReceiver"
             android:label="BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

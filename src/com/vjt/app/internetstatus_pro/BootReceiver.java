@@ -1,4 +1,4 @@
-package com.vjt.app.internetstatus;
+package com.vjt.app.internetstatus_pro;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

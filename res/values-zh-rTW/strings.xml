@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">網路狀態監控</string>
+    <string name="app_name">網路狀態監控專業版</string>
     <string name="url_label">查詢網址</string>
     <string name="interval_label">自動查詢間隔 (秒)</string>
     <string name="interval_validation_error">間隔必須介於1到65535.</string>

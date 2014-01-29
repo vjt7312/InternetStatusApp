@@ -1,4 +1,4 @@
-package com.vjt.app.internetstatus;
+package com.vjt.app.internetstatus_pro;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 				} catch (Exception e) {
 					clear = true;
 				}
-				if (interval <= 0 || 65535 < interval || clear) {
+				if (interval <= 1 || 65535 < interval || clear) {
 					Toast.makeText(MainActivity.this,
 							R.string.interval_validation_error,
 							Toast.LENGTH_LONG).show();

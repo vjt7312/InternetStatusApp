@@ -29,8 +29,6 @@ public class NetworkConnectivityListener {
 
 	private NetworkInfo mNetworkInfo;
 
-	private NetworkInfo mOtherNetworkInfo;
-
 	private ConnectivityBroadcastReceiver mReceiver;
 
 	private class ConnectivityBroadcastReceiver extends BroadcastReceiver {
@@ -56,19 +54,14 @@ public class NetworkConnectivityListener {
 
 			mNetworkInfo = (NetworkInfo) intent
 					.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-			mOtherNetworkInfo = (NetworkInfo) intent
-					.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
 
 			mReason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
 			mIsFailover = intent.getBooleanExtra(
 					ConnectivityManager.EXTRA_IS_FAILOVER, false);
 
-			LogUtil.d(TAG, "onReceive(): mNetworkInfo="
-					+ mNetworkInfo
-					+ " mOtherNetworkInfo = "
-					+ (mOtherNetworkInfo == null ? "[none]" : mOtherNetworkInfo
-							+ " noConn=" + noConnectivity) + " mState="
-					+ mState.toString());
+			LogUtil.d(TAG,
+					"onReceive(): mNetworkInfo=" + mNetworkInfo + " noConn="
+							+ noConnectivity + " mState=" + mState.toString());
 
 			Iterator<Handler> it = mHandlers.keySet().iterator();
 			while (it.hasNext()) {
@@ -80,9 +73,7 @@ public class NetworkConnectivityListener {
 	};
 
 	public enum State {
-		UNKNOWN,
-		CONNECTED,
-		NOT_CONNECTED
+		UNKNOWN, CONNECTED, NOT_CONNECTED
 	}
 
 	public NetworkConnectivityListener() {
@@ -106,7 +97,6 @@ public class NetworkConnectivityListener {
 			mContext.unregisterReceiver(mReceiver);
 			mContext = null;
 			mNetworkInfo = null;
-			mOtherNetworkInfo = null;
 			mIsFailover = false;
 			mReason = null;
 			mListening = false;
@@ -127,10 +117,6 @@ public class NetworkConnectivityListener {
 
 	public NetworkInfo getNetworkInfo() {
 		return mNetworkInfo;
-	}
-
-	public NetworkInfo getOtherNetworkInfo() {
-		return mOtherNetworkInfo;
 	}
 
 	public boolean isFailover() {

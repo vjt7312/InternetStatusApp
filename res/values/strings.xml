@@ -10,6 +10,12 @@
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">Offline</string>
     <string name="status_bad_label">Bad</string>
+    
+    <!-- pro -->
+    <string name="ntw_type_label">Network Type:</string>
+    <string name="ntw_state_label">Network State:</string>
+    <string name="ntw_roam_label">Roaming:</string>
+    <string name="ntw_none_label">None</string>
 
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>

@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class LogUtil {
 
-	public static final boolean enable = true;
+	public static final boolean enable = false;
 
 	public static int v(String tag, String msg) {
 		if (enable)

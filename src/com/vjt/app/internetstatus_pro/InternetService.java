@@ -60,7 +60,7 @@ public class InternetService extends Service {
 	private static String mURL;
 
 	// pro
-	private static NetworkConnectivityListener mNetworkConnectivityListener;
+	public static NetworkConnectivityListener mNetworkConnectivityListener;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -159,6 +159,7 @@ public class InternetService extends Service {
 					setupNotification(InternetService.this,
 							InternetService.STATUS_OFF);
 				serviceStatus = STATUS_OFF;
+				sendBroadcast(new Intent(ACTION_OFFLINE));
 				LogUtil.d(TAG, "Offline !!!");
 			} else {
 				if (!isThisTimeBad) {
@@ -286,8 +287,10 @@ public class InternetService extends Service {
 
 		} catch (Exception e) {
 			if (serviceStatus != STATUS_OFF)
-				sendBroadcast(new Intent(ACTION_OFFLINE));
+				setupNotification(InternetService.this,
+						InternetService.STATUS_OFF);
 			serviceStatus = STATUS_OFF;
+			sendBroadcast(new Intent(ACTION_OFFLINE));
 			LogUtil.d(TAG, "Offline !!!");
 		}
 	}
@@ -300,6 +303,7 @@ public class InternetService extends Service {
 		mNetworkConnectivityListener.unregisterHandler(mHandler);
 		mNetworkConnectivityListener.stopListening();
 		mNetworkConnectivityListener = null;
+		sendBroadcast(new Intent(ACTION_STOPPED));
 
 		resetStatus();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);

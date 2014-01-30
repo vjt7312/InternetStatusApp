@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -105,11 +106,24 @@ public class InternetService extends Service {
 		PendingIntent pIntent = PendingIntent
 				.getActivity(context, 0, intent, 0);
 
-		Notification noti = new Notification.Builder(context)
-				.setContentTitle(context.getString(R.string.status_title_label))
-				.setContentIntent(pIntent)
-				.setContentText(context.getString(status_label))
-				.setSmallIcon(icon).setAutoCancel(false).build();
+		Notification noti;
+		if (Build.VERSION.SDK_INT >= 17) {
+			noti = new Notification.Builder(context)
+					.setContentTitle(
+							context.getString(R.string.status_title_label))
+					.setContentIntent(pIntent)
+					.setContentText(context.getString(status_label))
+					.setSmallIcon(icon).setAutoCancel(false).build();
+		} else {
+			long when = System.currentTimeMillis();
+			CharSequence contentTitle = context
+					.getString(R.string.status_title_label);
+			CharSequence text = context.getString(status_label);
+			CharSequence contentText = context.getString(R.string.app_name);
+
+			noti = new Notification(icon, text, when);
+			noti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
+		}
 		noti.flags = Notification.FLAG_NO_CLEAR;
 		nm.notify(NOTIFICATIONID, noti);
 		startForeground(NOTIFICATIONID, noti);

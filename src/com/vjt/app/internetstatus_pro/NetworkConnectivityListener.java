@@ -46,6 +46,8 @@ public class NetworkConnectivityListener {
 			boolean noConnectivity = intent.getBooleanExtra(
 					ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
 
+			LogUtil.d(TAG, "noConnectivity = " + noConnectivity);
+
 			if (noConnectivity) {
 				mState = State.NOT_CONNECTED;
 			} else {

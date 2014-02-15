@@ -331,6 +331,13 @@ public class InternetService extends Service {
 			Intent serverService = new Intent(this, InternetService.class);
 			startService(serverService);
 		} else {
+			if (serviceStatus != STATUS_OFF)
+				setupNotification(InternetService.this,
+						InternetService.STATUS_OFF);
+			serviceStatus = STATUS_OFF;
+			sendBroadcast(new Intent(ACTION_OFFLINE));
+			LogUtil.d(TAG, "Offline !!!");
+			
 			resetStatus();
 		}
 	}

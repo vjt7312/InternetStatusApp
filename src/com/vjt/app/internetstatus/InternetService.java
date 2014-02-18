@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
@@ -29,25 +30,37 @@ public class InternetService extends Service {
 
 	private static final String TAG = "InternetService";
 
-	static public final String ACTION_STARTED = "com.vjt.app.internetstatus.STARTED";
-	static public final String ACTION_STOPPED = "com.vjt.app.internetstatus.STOPPED";
-	static public final String ACTION_ONLINE = "com.vjt.app.internetstatus.ONLINE";
-	static public final String ACTION_OFFLINE = "com.vjt.app.internetstatus.OFFLINE";
-	static public final String ACTION_BAD = "com.vjt.app.internetstatus.BAD";
+	public static final String ACTION_STARTED = "com.vjt.app.internetstatus.STARTED";
+	public static final String ACTION_STOPPED = "com.vjt.app.internetstatus.STOPPED";
+	public static final String ACTION_ONLINE = "com.vjt.app.internetstatus.ONLINE";
+	public static final String ACTION_OFFLINE = "com.vjt.app.internetstatus.OFFLINE";
+	public static final String ACTION_BAD = "com.vjt.app.internetstatus.BAD";
 
-	static public final String ACTION_SCREEN_ON = "screen_on";
-	static public final String ACTION_SCREEN_OFF = "screen_off";
+	// stat
+	public static final String ACTION_STAT = "com.vjt.app.internetstatus.STAT";
 
-	static public final int STATUS_NONE = 0;
-	static public final int STATUS_ON = 1;
-	static public final int STATUS_OFF = 2;
-	static public final int STATUS_BAD = 3;
+	public static final String ACTION_SCREEN_ON = "screen_on";
+	public static final String ACTION_SCREEN_OFF = "screen_off";
 
-	static public final int STATE_NONE = 0;
-	static public final int STATE_WAITING = 1;
+	private static final int STATUS_NONE = 0;
+	private static final int STATUS_ON = 1;
+	private static final int STATUS_OFF = 2;
+	private static final int STATUS_BAD = 3;
+
+	private static final int STATE_NONE = 0;
+	private static final int STATE_WAITING = 1;
 
 	private static final int MSG_CHECK_TIMEOUT = 1;
+	// pro
 	private static final int MSG_NETWORK_CHANGED = 2;
+	// stat
+	private static final int MSG_NET_STAT = 3;
+	private static final int TRAFFIC_NONE = 0;
+	private static final int TRAFFIC_LOW = 1;
+	private static final int TRAFFIC_HIGH = 2;
+
+	private static final int NET_STAT_INTERVAL = 1000;
+	private static final int NET_STAT_HIGH_THRESHOLD = 1024 * 512;
 
 	private final int NOTIFICATIONID = 7696;
 
@@ -62,6 +75,13 @@ public class InternetService extends Service {
 
 	// pro
 	public static NetworkConnectivityListener mNetworkConnectivityListener;
+
+	// stat
+	private static long mTxTotal;
+	private static long mRxTotal;
+	private static long mTxSec;
+	private static long mRxSec;
+	private static int mTrafficStatus;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -91,7 +111,13 @@ public class InternetService extends Service {
 
 		switch (status) {
 		case InternetService.STATUS_ON:
-			icon = R.drawable.online;
+			if (mTrafficStatus == TRAFFIC_HIGH) {
+				icon = R.drawable.hightraffic;
+			} else if (mTrafficStatus == TRAFFIC_LOW) {
+				icon = R.drawable.traffic;
+			} else {
+				icon = R.drawable.online;
+			}
 			status_label = R.string.status_online_label;
 			break;
 		case InternetService.STATUS_OFF:
@@ -114,7 +140,7 @@ public class InternetService extends Service {
 				.getActivity(context, 0, intent, 0);
 
 		Notification noti;
-		if (Build.VERSION.SDK_INT >= 17) {
+		if (Build.VERSION.SDK_INT >= 15) {
 			noti = new Notification.Builder(context)
 					.setContentTitle(
 							context.getString(R.string.status_title_label))
@@ -249,6 +275,7 @@ public class InternetService extends Service {
 			resetStatus();
 			return START_REDELIVER_INTENT;
 		}
+		doStat(true);
 		sendBroadcast(new Intent(ACTION_STARTED));
 		return START_REDELIVER_INTENT;
 	}
@@ -289,8 +316,10 @@ public class InternetService extends Service {
 
 	private void resetStatus() {
 		serviceStatus = STATUS_NONE;
+		mTrafficStatus = TRAFFIC_NONE;
 		cancelWatchdog();
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
+		mHandler.removeMessages(MSG_NET_STAT);
 	}
 
 	private void doCheck() {
@@ -320,7 +349,6 @@ public class InternetService extends Service {
 		sendBroadcast(new Intent(ACTION_STOPPED));
 
 		resetStatus();
-		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		unregisterReceiver(receiver);
 		clearNotification(this);
 		stopForeground(true);
@@ -340,6 +368,70 @@ public class InternetService extends Service {
 
 			resetStatus();
 		}
+	}
+
+	// stat
+	private static void getTx() {
+		mTxTotal = TrafficStats.getTotalTxBytes();
+		//LogUtil.i(TAG, "TX = " + mTxTotal);
+	}
+
+	private static void getRx() {
+		mRxTotal = TrafficStats.getTotalRxBytes();
+		//LogUtil.i(TAG, "RX = " + mRxTotal);
+	}
+
+	private void doStat(boolean isFirst) {
+		if (mRxTotal < 0)
+			mRxTotal = 0;
+		if (mTxTotal < 0)
+			mTxTotal = 0;
+
+		if (isFirst && mRxTotal > 0 && mRxTotal > 0
+				&& mHandler.hasMessages(MSG_NET_STAT)) {
+			return;
+		}
+
+		long rxTotal = mRxTotal;
+		long txTotal = mTxTotal;
+		getTx();
+		getRx();
+
+		if (!isFirst) {
+			mRxSec = mRxTotal - rxTotal;
+			mTxSec = mTxTotal - txTotal;
+			Intent i = new Intent(ACTION_STAT);
+			if (mRxTotal == -1) {
+				i.putExtra("rx", -1);
+			} else {
+				i.putExtra("rx", mRxSec);
+			}
+			if (mTxTotal == -1) {
+				i.putExtra("tx", -1);
+			} else {
+				i.putExtra("tx", mTxSec);
+			}
+			sendBroadcast(i);
+			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
+			LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
+
+			int oldTrafficStatus = mTrafficStatus;
+
+			if (mRxSec == 0 && mTxSec == 0) {
+				mTrafficStatus = TRAFFIC_NONE;
+			} else if (mRxSec >= NET_STAT_HIGH_THRESHOLD
+					|| mTxSec >= NET_STAT_HIGH_THRESHOLD) {
+				mTrafficStatus = TRAFFIC_HIGH;
+			} else {
+				mTrafficStatus = TRAFFIC_LOW;
+			}
+
+			if (oldTrafficStatus != mTrafficStatus) {
+				setupNotification(InternetService.this,
+						InternetService.STATUS_ON);
+			}
+		}
+		mHandler.sendEmptyMessageDelayed(MSG_NET_STAT, NET_STAT_INTERVAL);
 	}
 
 	private class MainHandler extends Handler {
@@ -364,6 +456,10 @@ public class InternetService extends Service {
 							.getState();
 					handleNetworkChange();
 				}
+				break;
+			// stat
+			case MSG_NET_STAT:
+				doStat(false);
 				break;
 			}
 		}

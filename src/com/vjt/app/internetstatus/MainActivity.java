@@ -34,10 +34,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 	ToggleButton mOnOffButton;
 	EditText mURL;
 	EditText mInterval;
-        // pro
+	// pro
 	TextView mNtwType;
 	TextView mNtwState;
 	TextView mNtwRoaming;
+	// stat
+	TextView mTX;
+	TextView mRX;
 
 	private AdView adView;
 
@@ -77,6 +80,10 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mNtwType = (TextView) findViewById(R.id.ntw_type);
 		mNtwState = (TextView) findViewById(R.id.ntw_state);
 		mNtwRoaming = (TextView) findViewById(R.id.ntw_roam);
+
+		// stat
+		mTX = (TextView) findViewById(R.id.stat_tx);
+		mRX = (TextView) findViewById(R.id.stat_rx);
 
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -162,6 +169,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		filter.addAction(InternetService.ACTION_STARTED);
 		filter.addAction(InternetService.ACTION_STOPPED);
 		filter.addAction(InternetService.ACTION_OFFLINE);
+		filter.addAction(InternetService.ACTION_STAT);
 		registerReceiver(internetServerReceiver, filter);
 	}
 
@@ -191,6 +199,10 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mNtwType.setText(getString(R.string.ntw_none_label));
 		mNtwState.setText(getString(R.string.ntw_none_label));
 		mNtwRoaming.setText(getString(R.string.ntw_none_label));
+		
+		// stat
+		mTX.setText("0");
+		mRX.setText("0");
 	}
 
 	// pro
@@ -211,6 +223,18 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 					|| intent.getAction()
 							.equals(InternetService.ACTION_OFFLINE)) {
 				clearNetworkInfo();
+			} else if (intent.getAction()
+					.equals(InternetService.ACTION_STAT)) {
+				if (intent.getLongExtra("tx", -1) == -1) {
+					mTX.setText(R.string.stat_unsupport);
+				} else {
+					mTX.setText(Long.toString(intent.getLongExtra("tx", -1)));
+				}
+				if (intent.getLongExtra("rx", -1) == -1) {
+					mRX.setText(R.string.stat_unsupport);
+				} else {
+					mRX.setText(Long.toString(intent.getLongExtra("rx", -1)));
+				}
 			}
 		}
 	};

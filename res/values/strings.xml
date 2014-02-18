@@ -11,6 +11,11 @@
     <string name="status_offline_label">Offline</string>
     <string name="status_bad_label">Bad</string>
 
+    <!-- stat -->
+    <string name="stat_tx_label">TX bytes / second:</string>
+    <string name="stat_rx_label">RX bytes / second:</string>
+    <string name="stat_unsupport">Device unsupported</string>
+
     <!-- pro -->
     <string name="ntw_type_label">Network Type:</string>
     <string name="ntw_state_label">Network State:</string>

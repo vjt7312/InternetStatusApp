@@ -11,4 +11,10 @@
     <string name="status_offline_label">斷線</string>
     <string name="status_bad_label">差</string>
 
+    <!-- pro -->
+    <string name="ntw_type_label">網路類型:</string>
+    <string name="ntw_state_label">網路狀態:</string>
+    <string name="ntw_roam_label">漫遊:</string>
+    <string name="ntw_none_label">無</string>
+
 </resources>

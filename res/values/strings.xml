@@ -12,8 +12,8 @@
     <string name="status_bad_label">Bad</string>
 
     <!-- stat -->
-    <string name="stat_tx_label">TX bytes / second:</string>
-    <string name="stat_rx_label">RX bytes / second:</string>
+    <string name="stat_tx_label">TX bytes/sec:</string>
+    <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">Device unsupported</string>
 
     <!-- pro -->

@@ -82,6 +82,7 @@ public class InternetService extends Service {
 	private static long mTxSec;
 	private static long mRxSec;
 	private static int mTrafficStatus;
+	private static boolean mSupport = true;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -140,7 +141,7 @@ public class InternetService extends Service {
 				.getActivity(context, 0, intent, 0);
 
 		Notification noti;
-		if (Build.VERSION.SDK_INT >= 15) {
+		if (Build.VERSION.SDK_INT >= 16) {
 			noti = new Notification.Builder(context)
 					.setContentTitle(
 							context.getString(R.string.status_title_label))
@@ -276,7 +277,14 @@ public class InternetService extends Service {
 			resetStatus();
 			return START_REDELIVER_INTENT;
 		}
-		doStat(true);
+
+		if (!mSupport) {
+			doStat(true);
+		} else {
+			Intent i = new Intent(ACTION_STAT);
+			i.putExtra("support", false);
+			sendBroadcast(i);
+		}
 		sendBroadcast(new Intent(ACTION_STARTED));
 		return START_REDELIVER_INTENT;
 	}
@@ -374,20 +382,15 @@ public class InternetService extends Service {
 	// stat
 	private static void getTx() {
 		mTxTotal = TrafficStats.getTotalTxBytes();
-		//LogUtil.i(TAG, "TX = " + mTxTotal);
+		LogUtil.i(TAG, "TX = " + mTxTotal);
 	}
 
 	private static void getRx() {
 		mRxTotal = TrafficStats.getTotalRxBytes();
-		//LogUtil.i(TAG, "RX = " + mRxTotal);
+		LogUtil.i(TAG, "RX = " + mRxTotal);
 	}
 
 	private void doStat(boolean isFirst) {
-		if (mRxTotal < 0)
-			mRxTotal = 0;
-		if (mTxTotal < 0)
-			mTxTotal = 0;
-
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0
 				&& mHandler.hasMessages(MSG_NET_STAT)) {
 			return;
@@ -395,23 +398,27 @@ public class InternetService extends Service {
 
 		long rxTotal = mRxTotal;
 		long txTotal = mTxTotal;
+
 		getTx();
 		getRx();
+
+		if (mRxTotal < 0 || mTxTotal < 0) {
+			mSupport = false;
+			Intent i = new Intent(ACTION_STAT);
+			i.putExtra("support", false);
+			sendBroadcast(i);
+			return;
+		} else {
+			mSupport = true;
+		}
 
 		if (!isFirst) {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
 			Intent i = new Intent(ACTION_STAT);
-			if (mRxTotal == -1) {
-				i.putExtra("rx", -1);
-			} else {
-				i.putExtra("rx", mRxSec);
-			}
-			if (mTxTotal == -1) {
-				i.putExtra("tx", -1);
-			} else {
-				i.putExtra("tx", mTxSec);
-			}
+			i.putExtra("rx", mRxSec);
+			i.putExtra("tx", mTxSec);
+			i.putExtra("support", true);
 			sendBroadcast(i);
 			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
 			LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);

@@ -146,7 +146,8 @@ public class InternetService extends Service {
 							context.getString(R.string.status_title_label))
 					.setContentIntent(pIntent)
 					.setContentText(context.getString(status_label))
-					.setSmallIcon(icon).setAutoCancel(false).build();
+					.setSmallIcon(icon).setAutoCancel(false)
+					.setPriority(Notification.PRIORITY_MAX).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = context

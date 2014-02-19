@@ -193,16 +193,12 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 					|| intent.getAction()
 							.equals(InternetService.ACTION_OFFLINE)) {
 				clearNetworkInfo();
-			} else if (intent.getAction()
-					.equals(InternetService.ACTION_STAT)) {
-				if (intent.getLongExtra("tx", -1) == -1) {
+			} else if (intent.getAction().equals(InternetService.ACTION_STAT)) {
+				if (intent.getBooleanExtra("support", false) == false) {
 					mTX.setText(R.string.stat_unsupport);
-				} else {
-					mTX.setText(Long.toString(intent.getLongExtra("tx", -1)));
-				}
-				if (intent.getLongExtra("rx", -1) == -1) {
 					mRX.setText(R.string.stat_unsupport);
 				} else {
+					mTX.setText(Long.toString(intent.getLongExtra("tx", -1)));
 					mRX.setText(Long.toString(intent.getLongExtra("rx", -1)));
 				}
 			}

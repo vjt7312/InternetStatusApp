@@ -146,7 +146,8 @@ public class InternetService extends Service {
 							context.getString(R.string.status_title_label))
 					.setContentIntent(pIntent)
 					.setContentText(context.getString(status_label))
-					.setSmallIcon(icon).setAutoCancel(false).build();
+					.setSmallIcon(icon).setAutoCancel(false)
+					.setPriority(Notification.PRIORITY_HIGH).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = context
@@ -373,12 +374,12 @@ public class InternetService extends Service {
 	// stat
 	private static void getTx() {
 		mTxTotal = TrafficStats.getTotalTxBytes();
-		//LogUtil.i(TAG, "TX = " + mTxTotal);
+		// LogUtil.i(TAG, "TX = " + mTxTotal);
 	}
 
 	private static void getRx() {
 		mRxTotal = TrafficStats.getTotalRxBytes();
-		//LogUtil.i(TAG, "RX = " + mRxTotal);
+		// LogUtil.i(TAG, "RX = " + mRxTotal);
 	}
 
 	private void doStat(boolean isFirst) {

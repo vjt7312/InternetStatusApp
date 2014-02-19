@@ -148,7 +148,7 @@ public class InternetService extends Service {
 					.setContentIntent(pIntent)
 					.setContentText(context.getString(status_label))
 					.setSmallIcon(icon).setAutoCancel(false)
-					.setPriority(Notification.PRIORITY_MAX).build();
+					.setPriority(Notification.PRIORITY_HIGH).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = context
@@ -278,7 +278,7 @@ public class InternetService extends Service {
 			return START_REDELIVER_INTENT;
 		}
 
-		if (!mSupport) {
+		if (mSupport) {
 			doStat(true);
 		} else {
 			Intent i = new Intent(ACTION_STAT);
@@ -391,16 +391,15 @@ public class InternetService extends Service {
 	}
 
 	private void doStat(boolean isFirst) {
+		long rxTotal = mRxTotal;
+		long txTotal = mTxTotal;
+		getTx();
+		getRx();
+
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0
 				&& mHandler.hasMessages(MSG_NET_STAT)) {
 			return;
 		}
-
-		long rxTotal = mRxTotal;
-		long txTotal = mTxTotal;
-
-		getTx();
-		getRx();
 
 		if (mRxTotal < 0 || mTxTotal < 0) {
 			mSupport = false;

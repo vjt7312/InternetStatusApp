@@ -10,20 +10,18 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import com.vjt.app.internetstatus.NetworkConnectivityListener.State;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import com.vjt.app.internetstatus.NetworkConnectivityListener.State;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
 
@@ -32,7 +30,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 	private static final String MY_AD_UNIT_ID = "a152e3523d2367b";
 
 	ToggleButton mOnOffButton;
-	EditText mURL;
+	// EditText mURL;
 	EditText mInterval;
 	// pro
 	TextView mNtwType;
@@ -74,7 +72,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mOnOffButton.setOnCheckedChangeListener(this);
 
 		mInterval = (EditText) findViewById(R.id.interval);
-		mURL = (EditText) findViewById(R.id.url);
+		// mURL = (EditText) findViewById(R.id.url);
 
 		// pro
 		mNtwType = (TextView) findViewById(R.id.ntw_type);
@@ -91,18 +89,19 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mInterval.setText(settings.getString("interval",
 				getString(R.string.interval_default)));
 
-		mURL.setText(settings.getString("url", getString(R.string.url_default)));
+		// mURL.setText(settings.getString("url",
+		// getString(R.string.url_default)));
 
 		if (settings.getString("onoff", getString(R.string.onoff_default))
 				.equals("on")) {
-			mURL.setEnabled(false);
+			// mURL.setEnabled(false);
 			mInterval.setEnabled(false);
 			mOnOffButton.setChecked(true);
 			editor.putString("onoff", "on");
 			editor.commit();
 			startServer();
 		} else {
-			mURL.setEnabled(true);
+			// mURL.setEnabled(true);
 			mInterval.setEnabled(true);
 			mOnOffButton.setChecked(false);
 			editor.putString("onoff", "off");
@@ -132,21 +131,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			}
 		});
 
-		mURL.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String url = mURL.getText().toString();
-
-				if (URLUtil.isValidUrl(url)) {
-					Toast.makeText(MainActivity.this,
-							R.string.url_validation_error, Toast.LENGTH_LONG)
-							.show();
-					return;
-				}
-				editor.putString("url", mURL.getText().toString());
-				editor.commit();
-			}
-		});
+		// mURL.setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// String url = mURL.getText().toString();
+		//
+		// if (URLUtil.isValidUrl(url)) {
+		// Toast.makeText(MainActivity.this,
+		// R.string.url_validation_error, Toast.LENGTH_LONG)
+		// .show();
+		// return;
+		// }
+		// editor.putString("url", mURL.getText().toString());
+		// editor.commit();
+		// }
+		// });
 	}
 
 	private void startServer() {
@@ -199,7 +198,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mNtwType.setText(getString(R.string.ntw_none_label));
 		mNtwState.setText(getString(R.string.ntw_none_label));
 		mNtwRoaming.setText(getString(R.string.ntw_none_label));
-		
+
 		// stat
 		mTX.setText("0");
 		mRX.setText("0");
@@ -242,13 +241,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 					.getDefaultSharedPreferences(this);
 			final SharedPreferences.Editor editor = settings.edit();
 
-			editor.putString("url", mURL.getText().toString());
+			// editor.putString("url", mURL.getText().toString());
 			editor.putString("interval", mInterval.getText().toString());
 			editor.putString("onoff", "on");
 			editor.commit();
 
 			mInterval.setEnabled(false);
-			mURL.setEnabled(false);
+			// mURL.setEnabled(false);
 			startServer();
 		} else {
 			final SharedPreferences settings = PreferenceManager
@@ -259,7 +258,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			editor.commit();
 
 			mInterval.setEnabled(true);
-			mURL.setEnabled(true);
+			// mURL.setEnabled(true);
 			stopServer();
 		}
 

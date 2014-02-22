@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">インターネットステータスモニタ</string>
+    <string name="url_label">クエリのURL</string>
+    <string name="interval_label">自動クエリー間隔（秒）</string>
+    <string name="interval_validation_error">間隔が65535の範囲2でなければなりません。 </string>
+    <string name="url_validation_error">無効なURLです。</string>
+    <string name="status_title_label">インターネットの状況を</string>
+    <string name="status_online_label">オンライン</string>
+    <string name="status_offline_label">オフライン</string>
+    <string name="status_bad_label">貧しい</string>
+    
+    <!-- stat -->
+    <string name="stat_tx_label">送信バイト/秒：</string>
+    <string name="stat_rx_label">受信バイト/秒：</string>
+    <string name="stat_unsupport">デバイスサポートされていない</string>
+
+    <!-- pro -->
+    <string name="ntw_type_label">ネットワークタイプ：</string>
+    <string name="ntw_state_label">ネットワーク状態：</string>
+    <string name="ntw_roam_label">ローミング： </string>
+    <string name="ntw_none_label">なし</string>
+
+    <!-- Configuration values, do not translate -->
+    <string name="onoff_default">off</string>
+    <string name="url_default">www.google.com</string>
+    <string name="interval_default">4</string>
+    <string name="bad_interval_default">1</string>
+
+</resources>

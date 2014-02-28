@@ -153,8 +153,8 @@ public class InternetService extends Service {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = context
 					.getString(R.string.status_title_label);
-			CharSequence text = context.getString(status_label);
-			CharSequence contentText = context.getString(R.string.app_name);
+			CharSequence text = context.getString(R.string.app_name);
+			CharSequence contentText = context.getString(status_label);
 
 			noti = new Notification(icon, text, when);
 			noti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
@@ -279,7 +279,7 @@ public class InternetService extends Service {
 		}
 
 		if (mSupport) {
-		doStat(true);
+			doStat(true);
 		} else {
 			Intent i = new Intent(ACTION_STAT);
 			i.putExtra("support", false);
@@ -415,8 +415,8 @@ public class InternetService extends Service {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
 			Intent i = new Intent(ACTION_STAT);
-				i.putExtra("rx", mRxSec);
-				i.putExtra("tx", mTxSec);
+			i.putExtra("rx", mRxSec);
+			i.putExtra("tx", mTxSec);
 			i.putExtra("support", true);
 			sendBroadcast(i);
 			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);

@@ -153,8 +153,8 @@ public class InternetService extends Service {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = context
 					.getString(R.string.status_title_label);
-			CharSequence text = context.getString(status_label);
-			CharSequence contentText = context.getString(R.string.app_name);
+			CharSequence text = context.getString(R.string.app_name);
+			CharSequence contentText = context.getString(status_label);
 
 			noti = new Notification(icon, text, when);
 			noti.setLatestEventInfo(this, contentTitle, contentText, pIntent);

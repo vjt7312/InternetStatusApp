@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
@@ -72,6 +73,7 @@ public class InternetService extends Service {
 	private final Handler mHandler = new MainHandler(this);
 	private static int mInterval;
 	private static String mURL;
+	private static boolean mOnOff;
 
 	// pro
 	public static NetworkConnectivityListener mNetworkConnectivityListener;
@@ -259,10 +261,23 @@ public class InternetService extends Service {
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		cancelWatchdog();
 
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		mOnOff = settings.getString("onoff", "off").equals("on");
+
+		if (!pm.isScreenOn()) {
+			resetStatus();
+			return START_REDELIVER_INTENT;
+		}
+
+		if (!mOnOff) {
+			stopSelf(startId);
+			return START_NOT_STICKY;
+		}
+
 		if (intent.getAction() == null
 				|| intent.getAction().equals(ACTION_SCREEN_ON)) {
-			SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences(this);
 
 			mInterval = Integer.valueOf(settings.getString("interval",
 					getString(R.string.interval_default)));

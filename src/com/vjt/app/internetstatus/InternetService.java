@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
@@ -258,6 +259,12 @@ public class InternetService extends Service {
 
 		mHandler.removeMessages(MSG_CHECK_TIMEOUT);
 		cancelWatchdog();
+
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		if (!pm.isScreenOn()) {
+			resetStatus();
+			return START_REDELIVER_INTENT;
+		}
 
 		if (intent.getAction() == null
 				|| intent.getAction().equals(ACTION_SCREEN_ON)) {

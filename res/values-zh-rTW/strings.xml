@@ -4,7 +4,7 @@
     <string name="app_name">網路狀態監控</string>
     <string name="url_label">查詢網址</string>
     <string name="interval_label">自動查詢間隔 (秒)</string>
-    <string name="interval_validation_error">間隔必須介於1到65535.</string>
+    <string name="interval_validation_error">間隔必須介於2到65535.</string>
     <string name="url_validation_error">無效的URL.</string>
     <string name="status_title_label">網路狀態</string>
     <string name="status_online_label">連線</string>

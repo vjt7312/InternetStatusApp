@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Internet Status Monitor</string>
+    <string name="url_label">Abfrage-URL</string>
+    <string name="interval_label">Auto Abfrageintervall (Sekunden)</string>
+    <string name="interval_validation_error">Das Intervall muss im Bereich von 2 bis 65535 sein.</string>
+    <string name="url_validation_error">Ungültige URL.</string>
+    <string name="status_title_label">Internet-Status</string>
+    <string name="status_online_label">Online</string>
+    <string name="status_offline_label">offline</string>
+    <string name="status_bad_label">schlecht</string>
+    
+    <!-- stat -->
+    <string name="stat_tx_label">TX Bytes / sec:</string>
+    <string name="stat_rx_label">RX Bytes / sec:</string>
+    <string name="stat_unsupport">Gerät nicht unterstützt</string>
+
+    <!-- pro -->
+    <string name="ntw_type_label">Netzwerktyp:</string>
+    <string name="ntw_state_label">Netzwerkstatus:</string>
+    <string name="ntw_roam_label">Roaming:</string>
+    <string name="ntw_none_label">keiner</string>
+
+</resources>

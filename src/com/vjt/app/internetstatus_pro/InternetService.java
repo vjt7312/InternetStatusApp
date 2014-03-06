@@ -144,7 +144,7 @@ public class InternetService extends Service {
 		PendingIntent pIntent = PendingIntent
 				.getActivity(context, 0, intent, 0);
 
-		if (Build.VERSION.SDK_INT >= 16 && mNoti != null) {
+		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
 			mNoti = ((Notification.Builder) mBuilder)
 					.setContentTitle(
 							context.getString(R.string.status_title_label))

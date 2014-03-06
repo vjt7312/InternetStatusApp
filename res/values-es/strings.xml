@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Monitor de estado de Internet </string>
+    <string name="app_name">Monitor de estado de Internet PRO</string>
     <string name="url_label">Query URL</string>
     <string name="interval_label">Intervalo de consulta automático (segundos)</string>
     <string name="interval_validation_error">El intervalo debe estar en el intervalo de 2 a 65535.</string>
@@ -21,5 +21,16 @@
     <string name="ntw_state_label">Estado de la red:</string>
     <string name="ntw_roam_label">itinerancia:</string>
     <string name="ntw_none_label">ninguno</string>
+
+    <string name="wifi_label">Wi-Fi</string>
+    <string name="mobile_label">red móvil</string>
+    <string name="true_label">sí</string>
+    <string name="false_label">no</string>
+    <string name="type_0_label">Conexión</string>
+    <string name="type_1_label">conectado</string>
+    <string name="type_2_label">suspendido</string>
+    <string name="type_3_label">Desconexión</string>
+    <string name="type_4_label">desconectado</string>
+    <string name="type_5_label">desconocido</string>
 
 </resources>

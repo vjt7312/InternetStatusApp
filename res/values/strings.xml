@@ -22,6 +22,17 @@
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">None</string>
 
+    <string name="wifi_label">Wi-Fi</string>
+    <string name="mobile_label">Mobile network</string>
+    <string name="true_label">Yes</string>
+    <string name="false_label">No</string>
+    <string name="type_0_label">Connecting</string>
+    <string name="type_1_label">Connected</string>
+    <string name="type_2_label">Suspended</string>
+    <string name="type_3_label">Disconnecting</string>
+    <string name="type_4_label">Disconnected</string>
+    <string name="type_5_label">Unknown</string>
+
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>

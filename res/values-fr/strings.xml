@@ -4,9 +4,9 @@
     <string name="app_name">Internet Monitor Status</string>
     <string name="url_label">requête URL</string>
     <string name="interval_label">Intervalle de requête automatique (secondes)</string>
-    <string name="interval_validation_error">L'intervalle doit être compris entre 2 et 65535.</string>
+    <string name="interval_validation_error">L\'intervalle doit être compris entre 2 et 65535.</string>
     <string name="url_validation_error">URL invalide.</string>
-    <string name="status_title_label">Statut d'Internet</string>
+    <string name="status_title_label">Statut d\'Internet</string>
     <string name="status_online_label">en ligne</string>
     <string name="status_offline_label">Hors ligne</string>
     <string name="status_bad_label">mauvais</string>

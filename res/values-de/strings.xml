@@ -22,4 +22,15 @@
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">keiner</string>
 
+    <string name="wifi_label">Wi-Fi</string>
+    <string name="mobile_label">Mobile-Netz</string>
+    <string name="true_label">ja </string>
+    <string name="false_label">nicht</string>
+    <string name="type_0_label">Anschließen</string>
+    <string name="type_1_label">verbunden</string>
+    <string name="type_2_label">schwebend</string>
+    <string name="type_3_label">Trennen</string>
+    <string name="type_4_label">getrennt</string>
+    <string name="type_5_label">unbekannt</string>
+
 </resources>

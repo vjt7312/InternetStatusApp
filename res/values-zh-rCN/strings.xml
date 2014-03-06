@@ -4,7 +4,7 @@
     <string name="app_name">网路状态监控</string>
     <string name="url_label">查询网址</string>
     <string name="interval_label">自动查询间隔 (秒)</string>
-    <string name="interval_validation_error">间隔必须介于1到65535.</string>
+    <string name="interval_validation_error">间隔必须介于2到65535.</string>
     <string name="url_validation_error">无效的URL.</string>
     <string name="status_title_label">网络状态</string>
     <string name="status_online_label">连线</string>
@@ -21,5 +21,16 @@
     <string name="ntw_state_label">网络状态:</string>
     <string name="ntw_roam_label">漫游:</string>
     <string name="ntw_none_label">无</string>
+
+    <string name="wifi_label">无线网络</string>
+    <string name="mobile_label">移动网络</string>
+    <string name="true_label">是</string>
+    <string name="false_label">否</string>
+    <string name="type_0_label">连接中</string>
+    <string name="type_1_label">已连接</string>
+    <string name="type_2_label">暂停</string>
+    <string name="type_3_label">断线中</string>
+    <string name="type_4_label">已断线</string>
+    <string name="type_5_label">未知</string>
 
 </resources>

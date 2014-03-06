@@ -21,5 +21,16 @@
     <string name="ntw_state_label">網路狀態:</string>
     <string name="ntw_roam_label">漫遊:</string>
     <string name="ntw_none_label">無</string>
+    
+    <string name="wifi_label">無線網絡 </string>
+    <string name="mobile_label">移動網絡</string>
+    <string name="true_label">是</string>
+    <string name="false_label">否</string>
+    <string name="type_0_label">連接中</string>
+    <string name="type_1_label">已連接</string>
+    <string name="type_2_label">暫停</string>
+    <string name="type_3_label">斷線中</string>
+    <string name="type_4_label">已斷線</string>
+    <string name="type_5_label">未知</string>
 
 </resources>

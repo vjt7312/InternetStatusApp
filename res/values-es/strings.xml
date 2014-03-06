@@ -21,5 +21,16 @@
     <string name="ntw_state_label">Estado de la red:</string>
     <string name="ntw_roam_label">itinerancia:</string>
     <string name="ntw_none_label">ninguno</string>
+    
+    <string name="wifi_label">Wi-Fi</string>
+    <string name="mobile_label">red móvil</string>
+    <string name="true_label">sí</string>
+    <string name="false_label">no</string>
+    <string name="type_0_label">Conexión</string>
+    <string name="type_1_label">conectado</string>
+    <string name="type_2_label">suspendido</string>
+    <string name="type_3_label">Desconexión</string>
+    <string name="type_4_label">desconectado</string>
+    <string name="type_5_label">desconocido</string>
 
 </resources>

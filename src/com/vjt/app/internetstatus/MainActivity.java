@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -61,7 +61,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mInterval.setText(settings.getString("interval",
 				getString(R.string.interval_default)));
 
-		// mURL.setText(settings.getString("url", getString(R.string.url_default)));
+		// mURL.setText(settings.getString("url",
+		// getString(R.string.url_default)));
 
 		if (settings.getString("onoff", getString(R.string.onoff_default))
 				.equals("on")) {
@@ -102,21 +103,21 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			}
 		});
 
-//		mURL.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				String url = mURL.getText().toString();
-//
-//				if (URLUtil.isValidUrl(url)) {
-//					Toast.makeText(MainActivity.this,
-//							R.string.url_validation_error, Toast.LENGTH_LONG)
-//							.show();
-//					return;
-//				}
-//				editor.putString("url", mURL.getText().toString());
-//				editor.commit();
-//			}
-//		});
+		// mURL.setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// String url = mURL.getText().toString();
+		//
+		// if (URLUtil.isValidUrl(url)) {
+		// Toast.makeText(MainActivity.this,
+		// R.string.url_validation_error, Toast.LENGTH_LONG)
+		// .show();
+		// return;
+		// }
+		// editor.putString("url", mURL.getText().toString());
+		// editor.commit();
+		// }
+		// });
 	}
 
 	private void startServer() {
@@ -151,17 +152,57 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		unregisterReceiver(internetServerReceiver);
 	}
 
+	private String getNetworkInfoName(int type) {
+		switch (type) {
+		case ConnectivityManager.TYPE_MOBILE:
+			return getString(R.string.mobile_label);
+		case ConnectivityManager.TYPE_WIFI:
+			return getString(R.string.wifi_label);
+		}
+		return null;
+	}
+
+	private String getNetworkInfoState(NetworkInfo.State state) {
+		switch (state) {
+		case CONNECTING:
+			return getString(R.string.type_0_label);
+		case CONNECTED:
+			return getString(R.string.type_1_label);
+		case SUSPENDED:
+			return getString(R.string.type_2_label);
+		case DISCONNECTING:
+			return getString(R.string.type_3_label);
+		case DISCONNECTED:
+			return getString(R.string.type_4_label);
+		case UNKNOWN:
+			return getString(R.string.type_5_label);
+		}
+		return null;
+	}
+
+	private String getNetworkInfoIsRoaming(boolean isRoaming) {
+		if (isRoaming) {
+			return getString(R.string.true_label);
+		} else {
+			return getString(R.string.false_label);
+		}
+	}
+
 	// pro
 	private void setNetworkInfo(NetworkInfo info) {
 		if (info == null) {
 			clearNetworkInfo();
 			return;
 		}
-		mNtwType.setText(info.getTypeName()
+		String name = getNetworkInfoName(info.getType());
+		String state = getNetworkInfoState(info.getState());
+		String isRoaming = getNetworkInfoIsRoaming(info.isRoaming());
+
+		mNtwType.setText(name
 				+ ((info.getSubtypeName() == null) ? "" : ("["
 						+ info.getSubtypeName() + "]")));
-		mNtwState.setText(info.getState().toString());
-		mNtwRoaming.setText(info.isRoaming() ? "True" : "False");
+		mNtwState.setText(state);
+		mNtwRoaming.setText(isRoaming);
 	}
 
 	// pro

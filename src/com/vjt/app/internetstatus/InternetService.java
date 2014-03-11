@@ -275,7 +275,7 @@ public class InternetService extends Service {
 				.getDefaultSharedPreferences(this);
 		mOnOff = settings.getString("onoff", "off").equals("on");
 
-		if (!pm.isScreenOn()) {
+		if (!pm.isScreenOn() || mConnectivityState != State.CONNECTED) {
 			resetStatus();
 			return START_REDELIVER_INTENT;
 		}

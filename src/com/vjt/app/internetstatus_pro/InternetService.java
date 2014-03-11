@@ -275,7 +275,7 @@ public class InternetService extends Service {
 				.getDefaultSharedPreferences(this);
 		mOnOff = settings.getString("onoff", "off").equals("on");
 
-		if (!pm.isScreenOn()) {
+		if (!pm.isScreenOn() || mConnectivityState != State.CONNECTED) {
 			resetStatus();
 			return START_REDELIVER_INTENT;
 		}
@@ -493,7 +493,7 @@ public class InternetService extends Service {
 
 		long rxTotal = mRxTotal;
 		long txTotal = mTxTotal;
-		
+
 		getTx();
 		getRx();
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
@@ -510,7 +510,7 @@ public class InternetService extends Service {
 				saveData();
 			}
 			if (mHandler.hasMessages(MSG_NET_STAT))
-			return;
+				return;
 		}
 
 		if (mRxTotal < 0 || mTxTotal < 0) {

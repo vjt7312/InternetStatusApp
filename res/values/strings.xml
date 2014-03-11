@@ -15,6 +15,9 @@
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">Device unsupported</string>
+    <string name="stat_tx_total_label">TX MB total:</string>
+    <string name="stat_rx_total_label">RX MB total:</string>
+    <string name="stat_reset_label">Reset</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Network Type:</string>
@@ -36,7 +39,11 @@
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>
-    <string name="interval_default">4</string>
+    <string name="interval_0_default">2</string>
+    <string name="interval_1_default">3</string>
+    <string name="interval_2_default">4</string>
+    <string name="interval_3_default">6</string>
+    <string name="interval_4_default">10</string>
     <string name="bad_interval_default">1</string>
 
 </resources>

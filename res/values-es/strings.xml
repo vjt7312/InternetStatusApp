@@ -15,6 +15,9 @@
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">dispositivo no admitido</string>
+    <string name="stat_tx_total_label">TX MB en total:</string>
+    <string name="stat_rx_total_label">RX MB en total:</string>
+    <string name="stat_reset_label">reajustar</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Tipo de red:</string>

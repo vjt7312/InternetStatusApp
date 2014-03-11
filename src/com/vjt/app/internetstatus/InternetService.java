@@ -39,6 +39,8 @@ public class InternetService extends Service {
 
 	// stat
 	public static final String ACTION_STAT = "com.vjt.app.internetstatus.STAT";
+	public static final String ACTION_RESET_TX = "com.vjt.app.internetstatus.RESET_TX";
+	public static final String ACTION_RESET_RX = "com.vjt.app.internetstatus.RESET_RX";
 
 	public static final String ACTION_SCREEN_ON = "screen_on";
 	public static final String ACTION_SCREEN_OFF = "screen_off";
@@ -87,6 +89,8 @@ public class InternetService extends Service {
 	private static long mRxSec;
 	private static int mTrafficStatus;
 	private static boolean mSupport = true;
+	private static long mTXTotal;
+	private static long mRXTotal;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -284,9 +288,33 @@ public class InternetService extends Service {
 		if (intent.getAction() == null
 				|| intent.getAction().equals(ACTION_SCREEN_ON)) {
 
-			mInterval = Integer.valueOf(settings.getString("interval",
-					getString(R.string.interval_default)));
+			int f = (settings.getInt("interval", 2));
+			switch (f) {
+			case 0:
+				mInterval = Integer
+						.parseInt(getString(R.string.interval_0_default));
+				break;
+			case 1:
+				mInterval = Integer
+						.parseInt(getString(R.string.interval_1_default));
+				break;
+			case 2:
+				mInterval = Integer
+						.parseInt(getString(R.string.interval_2_default));
+				break;
+			case 3:
+				mInterval = Integer
+						.parseInt(getString(R.string.interval_3_default));
+				break;
+			case 4:
+				mInterval = Integer
+						.parseInt(getString(R.string.interval_4_default));
+				break;
+			}
+
 			mURL = settings.getString("url", getString(R.string.url_default));
+			mTXTotal = settings.getLong("tx_total", 0);
+			mRXTotal = settings.getLong("rx_total", 0);
 
 			isThisTimeBad = false;
 			doCheck();
@@ -296,10 +324,26 @@ public class InternetService extends Service {
 		} else if (intent.getAction().equals(ACTION_SCREEN_OFF)) {
 			resetStatus();
 			return START_REDELIVER_INTENT;
+		} else if (intent.getAction().equals(ACTION_RESET_TX)) {
+			resetStatTx();
+			if (serviceStatus == STATUS_NONE) {
+				stopSelf(startId);
+				return START_NOT_STICKY;
+			} else {
+				return START_REDELIVER_INTENT;
+			}
+		} else if (intent.getAction().equals(ACTION_RESET_RX)) {
+			resetStatRx();
+			if (serviceStatus == STATUS_NONE) {
+				stopSelf(startId);
+				return START_NOT_STICKY;
+			} else {
+				return START_REDELIVER_INTENT;
+			}
 		}
 
 		if (mSupport) {
-			doStat(true);
+			doStat(true, intent.getAction() != null);
 		} else {
 			Intent i = new Intent(ACTION_STAT);
 			i.putExtra("support", false);
@@ -343,6 +387,30 @@ public class InternetService extends Service {
 		}
 	}
 
+	private void resetStatTx() {
+		mTXTotal = 0;
+		Intent i = new Intent(ACTION_STAT);
+		i.putExtra("rx", mRxSec);
+		i.putExtra("tx", mTxSec);
+		i.putExtra("rx_total", mRXTotal);
+		i.putExtra("tx_total", mTXTotal);
+		i.putExtra("support", mSupport);
+		sendBroadcast(i);
+		saveData();
+	}
+
+	private void resetStatRx() {
+		mRXTotal = 0;
+		Intent i = new Intent(ACTION_STAT);
+		i.putExtra("rx", mRxSec);
+		i.putExtra("tx", mTxSec);
+		i.putExtra("rx_total", mRXTotal);
+		i.putExtra("tx_total", mTXTotal);
+		i.putExtra("support", mSupport);
+		sendBroadcast(i);
+		saveData();
+	}
+
 	private void resetStatus() {
 		serviceStatus = STATUS_NONE;
 		mTrafficStatus = TRAFFIC_NONE;
@@ -367,6 +435,16 @@ public class InternetService extends Service {
 		}
 	}
 
+	private void saveData() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final SharedPreferences.Editor editor = settings.edit();
+
+		editor.putLong("tx_total", mTXTotal);
+		editor.putLong("rx_total", mRXTotal);
+		editor.commit();
+	}
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -377,6 +455,7 @@ public class InternetService extends Service {
 		mNetworkConnectivityListener = null;
 		sendBroadcast(new Intent(ACTION_STOPPED));
 
+		saveData();
 		resetStatus();
 		unregisterReceiver(receiver);
 		clearNotification(this);
@@ -410,15 +489,28 @@ public class InternetService extends Service {
 		LogUtil.i(TAG, "RX = " + mRxTotal);
 	}
 
-	private void doStat(boolean isFirst) {
+	private void doStat(boolean isFirst, boolean countOldData) {
+
 		long rxTotal = mRxTotal;
 		long txTotal = mTxTotal;
+		
 		getTx();
 		getRx();
-
-		if (isFirst && mRxTotal > 0 && mRxTotal > 0
-				&& mHandler.hasMessages(MSG_NET_STAT)) {
-			return;
+		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
+			if (countOldData && (rxTotal > 0 || txTotal > 0)) {
+				mRXTotal += mRxTotal - rxTotal;
+				mTXTotal += mTxTotal - txTotal;
+				Intent i = new Intent(ACTION_STAT);
+				i.putExtra("rx", mRxSec);
+				i.putExtra("tx", mTxSec);
+				i.putExtra("rx_total", mRXTotal);
+				i.putExtra("tx_total", mTXTotal);
+				i.putExtra("support", mSupport);
+				sendBroadcast(i);
+				saveData();
+			}
+			if (mHandler.hasMessages(MSG_NET_STAT))
+				return;
 		}
 
 		if (mRxTotal < 0 || mTxTotal < 0) {
@@ -434,13 +526,20 @@ public class InternetService extends Service {
 		if (!isFirst) {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
+			mRXTotal += mRxSec;
+			mTXTotal += mTxSec;
 			Intent i = new Intent(ACTION_STAT);
 			i.putExtra("rx", mRxSec);
 			i.putExtra("tx", mTxSec);
-			i.putExtra("support", true);
+			i.putExtra("rx_total", mRXTotal);
+			i.putExtra("tx_total", mTXTotal);
+			i.putExtra("support", mSupport);
 			sendBroadcast(i);
+			saveData();
 			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
 			LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
+			LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
+			LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
 
 			int oldTrafficStatus = mTrafficStatus;
 
@@ -486,7 +585,7 @@ public class InternetService extends Service {
 				break;
 			// stat
 			case MSG_NET_STAT:
-				doStat(false);
+				doStat(false, true);
 				break;
 			}
 		}

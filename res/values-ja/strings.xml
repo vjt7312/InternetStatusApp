@@ -16,6 +16,10 @@
     <string name="stat_rx_label">受信バイト/秒：</string>
     <string name="stat_unsupport">デバイスサポートされていない</string>
 
+<string name="stat_tx_total_label">アップロード MB:</string>
+    <string name="stat_rx_total_label">ダウンロード MB:</string>
+    <string name="stat_reset_label">リセット</string>
+
     <!-- pro -->
     <string name="ntw_type_label">ネットワークタイプ：</string>
     <string name="ntw_state_label">ネットワーク状態：</string>

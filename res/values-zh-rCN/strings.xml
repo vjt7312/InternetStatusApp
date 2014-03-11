@@ -16,6 +16,10 @@
     <string name="stat_rx_label">每秒下载位元组:</string>
     <string name="stat_unsupport">装置不支持</string>
 
+<string name="stat_tx_total_label">总上传MB:</string>
+    <string name="stat_rx_total_label">总下载MB:</string>
+    <string name="stat_reset_label">重设</string>
+
     <!-- pro -->
     <string name="ntw_type_label">网络类型:</string>
     <string name="ntw_state_label">网络状态:</string>

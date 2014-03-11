@@ -16,6 +16,10 @@
     <string name="stat_rx_label">RX Bytes / sec:</string>
     <string name="stat_unsupport">Gerät nicht unterstützt</string>
 
+<string name="stat_tx_total_label">TX MB Gesamt:</string>
+    <string name="stat_rx_total_label">RX MB Gesamt:</string>
+    <string name="stat_reset_label">rücksetzen</string>
+
     <!-- pro -->
     <string name="ntw_type_label">Netzwerktyp:</string>
     <string name="ntw_state_label">Netzwerkstatus:</string>

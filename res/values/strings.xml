@@ -18,6 +18,9 @@
     <string name="stat_tx_total_label">TX MB total:</string>
     <string name="stat_rx_total_label">RX MB total:</string>
     <string name="stat_reset_label">Reset</string>
+    <string name="stat_setup_label">Setup</string>
+    <string name="stat_setup_title_label">Set limitation alert(MB):</string>
+    <string name="stat_limit_label">Limitation alert(MB):</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Network Type:</string>

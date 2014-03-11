@@ -242,15 +242,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mNtwRoaming.setText(isRoaming);
 	}
 
-	// pro
-	private void clearNetworkInfo() {
-		mNtwType.setText(getString(R.string.ntw_none_label));
-		mNtwState.setText(getString(R.string.ntw_none_label));
-		mNtwRoaming.setText(getString(R.string.ntw_none_label));
+	private void clearNetworkTotal() {
+		LogUtil.i(TAG, "clearNetworkTotal");
 
-		// stat
-		mTX.setText("0");
-		mRX.setText("0");
 		mTXTotal.setText("0");
 		mRXTotal.setText("0");
 
@@ -260,6 +254,18 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		editor.putLong("tx_total", 0);
 		editor.putLong("rx_total", 0);
 		editor.commit();
+	}
+
+	// pro
+	private void clearNetworkInfo() {
+		LogUtil.i(TAG, "clearNetworkInfo");
+		mNtwType.setText(getString(R.string.ntw_none_label));
+		mNtwState.setText(getString(R.string.ntw_none_label));
+		mNtwRoaming.setText(getString(R.string.ntw_none_label));
+
+		// stat
+		mTX.setText("0");
+		mRX.setText("0");
 	}
 
 	// pro
@@ -276,9 +282,11 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 							.getNetworkInfo());
 				}
 			} else if (intent.getAction()
-					.equals(InternetService.ACTION_STOPPED)
-					|| intent.getAction()
-							.equals(InternetService.ACTION_OFFLINE)) {
+					.equals(InternetService.ACTION_STOPPED)) {
+				clearNetworkInfo();
+				clearNetworkTotal();
+			} else if (intent.getAction()
+					.equals(InternetService.ACTION_OFFLINE)) {
 				clearNetworkInfo();
 			} else if (intent.getAction().equals(InternetService.ACTION_STAT)) {
 				if (intent.getBooleanExtra("support", false) == false) {

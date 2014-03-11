@@ -315,6 +315,9 @@ public class InternetService extends Service {
 			mURL = settings.getString("url", getString(R.string.url_default));
 			mTXTotal = settings.getLong("tx_total", 0);
 			mRXTotal = settings.getLong("rx_total", 0);
+			LogUtil.i(TAG, "onStartCommand");
+			LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
+			LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
 
 			isThisTimeBad = false;
 			doCheck();
@@ -493,7 +496,7 @@ public class InternetService extends Service {
 
 		long rxTotal = mRxTotal;
 		long txTotal = mTxTotal;
-		
+
 		getTx();
 		getRx();
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
@@ -506,6 +509,11 @@ public class InternetService extends Service {
 				i.putExtra("rx_total", mRXTotal);
 				i.putExtra("tx_total", mTXTotal);
 				i.putExtra("support", mSupport);
+				LogUtil.i(TAG, "isFirst = " + isFirst);
+				LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
+				LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
+				LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
+				LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
 				sendBroadcast(i);
 				saveData();
 			}
@@ -552,7 +560,8 @@ public class InternetService extends Service {
 				mTrafficStatus = TRAFFIC_LOW;
 			}
 
-			if (oldTrafficStatus != mTrafficStatus) {
+			if (oldTrafficStatus != mTrafficStatus
+					&& serviceStatus == STATUS_ON) {
 				setupNotification(InternetService.this,
 						InternetService.STATUS_ON);
 			}

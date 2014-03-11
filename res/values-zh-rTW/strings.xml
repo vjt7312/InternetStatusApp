@@ -15,8 +15,8 @@
     <string name="stat_tx_label">每秒上傳位元組:</string>
     <string name="stat_rx_label">每秒下載位元組:</string>
     <string name="stat_unsupport">裝置不支援</string>
-    <string name="stat_tx_total_label">總上傳百萬位元組:</string>
-    <string name="stat_rx_total_label">總下載百萬位元組:</string>
+    <string name="stat_tx_total_label">總上傳MB:</string>
+    <string name="stat_rx_total_label">總下載MB:</string>
     <string name="stat_reset_label">重設</string>
 
     <!-- pro -->

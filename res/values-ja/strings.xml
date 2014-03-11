@@ -15,8 +15,8 @@
     <string name="stat_tx_label">送信バイト/秒：</string>
     <string name="stat_rx_label">受信バイト/秒：</string>
     <string name="stat_unsupport">デバイスサポートされていない</string>
-    <string name="stat_tx_total_label">総アップロードメガバイト:</string>
-    <string name="stat_rx_total_label">総ダウンロードメガバイト:</string>
+    <string name="stat_tx_total_label">アップロード MB:</string>
+    <string name="stat_rx_total_label">ダウンロード MB:</string>
     <string name="stat_reset_label">リセット</string>
 
     <!-- pro -->

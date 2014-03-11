@@ -15,8 +15,8 @@
     <string name="stat_tx_label">每秒上传位元组:</string>
     <string name="stat_rx_label">每秒下载位元组:</string>
     <string name="stat_unsupport">装置不支持</string>
-    <string name="stat_tx_total_label">总上传百万位元组:</string>
-    <string name="stat_rx_total_label">总下载百万位元组:</string>
+    <string name="stat_tx_total_label">总上传MB:</string>
+    <string name="stat_rx_total_label">总下载MB:</string>
     <string name="stat_reset_label">重设</string>
 
     <!-- pro -->

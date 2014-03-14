@@ -172,20 +172,47 @@
                 android:orientation="horizontal"
                 android:paddingTop="10dp" >
 
-                <TextView
-                    android:id="@+id/stat_tx1"
+                <LinearLayout
+                    android:id="@+id/stat_tx"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="4dp"
-                    android:text="@string/stat_tx_total_label"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/stat_tx_total"
+                    <TextView
+                        android:id="@+id/stat_tx1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
+                        android:text="@string/stat_tx_total_label"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/stat_tx2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
+                        android:text="@string/stat_limit_label"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/stat_tx1"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:layout_toRightOf="@id/stat_tx"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/stat_tx_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/stat_tx_limit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/stat_tx_btn"
@@ -194,6 +221,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="@string/stat_reset_label" />
+
+                <Button
+                    android:id="@+id/stat_set_tx_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/stat_tx_btn"
+                    android:text="@string/stat_setup_label" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -202,20 +237,49 @@
                 android:orientation="horizontal"
                 android:paddingTop="10dp" >
 
-                <TextView
-                    android:id="@+id/stat_rx1"
+                <LinearLayout
+                    android:id="@+id/stat_rx"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="4dp"
-                    android:text="@string/stat_rx_total_label"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/stat_rx_total"
+                    <TextView
+                        android:id="@+id/stat_rx1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
+                        android:text="@string/stat_rx_total_label"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/stat_rx2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="4dp"
+                        android:text="@string/stat_limit_label"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/stat_rx1"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:layout_toRightOf="@id/stat_rx"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/stat_rx_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/stat_rx1"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/stat_rx_limit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/stat_rx2"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/stat_rx_btn"
@@ -224,6 +288,14 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="@string/stat_reset_label" />
+
+                <Button
+                    android:id="@+id/stat_set_rx_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/stat_rx_btn"
+                    android:text="@string/stat_setup_label" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

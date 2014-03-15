@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -211,7 +212,9 @@ public class InternetService extends Service {
 					.setContentTitle(getString(R.string.status_title_label))
 					.setContentIntent(pIntent).setContentText(status_label)
 					.setSmallIcon(icon).setAutoCancel(false)
-					.setPriority(Notification.PRIORITY_HIGH).build();
+					.setPriority(Notification.PRIORITY_HIGH)
+					.setVibrate(new long[] { 0, 1000 })
+					.setLights(Color.RED, 3000, 3000).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = getString(R.string.status_title_label);
@@ -221,6 +224,8 @@ public class InternetService extends Service {
 			mNoti.icon = icon;
 			mNoti.when = when;
 			mNoti.tickerText = text;
+			mNoti.defaults |= Notification.DEFAULT_SOUND;
+			mNoti.defaults |= Notification.DEFAULT_LIGHTS;
 			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
 		}
 		mNoti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;

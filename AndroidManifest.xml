@@ -31,6 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.vjt.app.internetstatus_pro.Settings"
+            android:label="@string/action_settings" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="com.vjt.app.internetstatus_pro.InternetService"

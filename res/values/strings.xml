@@ -13,16 +13,14 @@
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">Offline</string>
     <string name="status_bad_label">Bad</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">Device unsupported</string>
-
-<string name="stat_tx_total_label">TX total(MB):</string>
+    <string name="stat_tx_total_label">TX total(MB):</string>
     <string name="stat_rx_total_label">RX total(MB):</string>
     <string name="stat_reset_label">Reset</string>
-
     <string name="stat_setup_label">Setup</string>
     <string name="stat_limit_alert">Limitation alert</string>
     <string name="stat_setup_title_label">Set limitation alert(MB):</string>
@@ -37,7 +35,6 @@
     <string name="ntw_state_label">Network State:</string>
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">None</string>
-
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">Mobile network</string>
     <string name="true_label">Yes</string>
@@ -48,6 +45,13 @@
     <string name="type_3_label">Disconnecting</string>
     <string name="type_4_label">Disconnected</string>
     <string name="type_5_label">Unknown</string>
+    
+    <string name="action_settings">Settings</string>
+    <string name="settings_alert">Alert Settings</string>
+    <string name="settings_vibrator">Vibrator</string>
+    <string name="settings_off">Off</string>
+    <string name="settings_long">Long</string>
+    <string name="settings_light">Light</string>
 
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>

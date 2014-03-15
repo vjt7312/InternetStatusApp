@@ -51,11 +51,11 @@
     <!-- Configuration values, do not translate -->
     <string name="onoff_default">off</string>
     <string name="url_default">www.google.com</string>
-    <string name="interval_0_default">2</string>
-    <string name="interval_1_default">3</string>
+    <string name="interval_0_default">10</string>
+    <string name="interval_1_default">6</string>
     <string name="interval_2_default">4</string>
-    <string name="interval_3_default">6</string>
-    <string name="interval_4_default">10</string>
+    <string name="interval_3_default">3</string>
+    <string name="interval_4_default">2</string>
     <string name="bad_interval_default">600</string>
 
 </resources>

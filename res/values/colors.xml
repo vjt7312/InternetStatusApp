@@ -1,3 +1,6 @@
 <resources>
-<color name="green">#D49213</color>
+
+    <color name="green">#D49213</color>
+    <color name="red">#FF4500</color>
+
 </resources>

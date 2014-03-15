@@ -3,7 +3,10 @@
 
     <string name="app_name">ネットワークステータスPRO</string>
     <string name="url_label">クエリのURL</string>
-    <string name="interval_label">自動クエリー間隔（秒）</string>
+    <string name="interval_label">検査の頻度</string>
+    <string name="interval_0_label">低い</string>
+    <string name="interval_1_label">で</string>
+    <string name="interval_2_label">高い</string>
     <string name="interval_validation_error">間隔が65535の範囲2でなければなりません。 </string>
     <string name="url_validation_error">無効なURLです。</string>
     <string name="status_title_label">インターネットの状況を</string>
@@ -18,7 +21,16 @@
 
 <string name="stat_tx_total_label">アップロード MB:</string>
     <string name="stat_rx_total_label">ダウンロード MB:</string>
-    <string name="stat_reset_label">リセット</string>
+    <string name="stat_reset_label">ゼロ</string>
+    
+    <string name="stat_setup_label">セット</string>
+    <string name="stat_limit_alert">制限通知</string>
+    <string name="stat_setup_title_label">設定の制限の通知(MB):</string>
+    <string name="stat_limit_label">制限通知(MB):</string>
+    <string name="stat_limit_up_exceed_label">以上のものをアップロードする %1$s MB</string>
+    <string name="stat_limit_down_exceed_label">経由でダウンロード %1$s MB</string>
+    <string name="stat_ok_label">決定する</string>
+    <string name="stat_cancel_label">キャンセル</string>
 
     <!-- pro -->
     <string name="ntw_type_label">ネットワークタイプ：</string>

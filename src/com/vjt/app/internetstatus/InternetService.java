@@ -209,15 +209,15 @@ public class InternetService extends Service {
 
 		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
 			mNoti = ((Notification.Builder) mBuilder)
-					.setContentTitle(getString(R.string.status_title_label))
+					.setContentTitle(getString(R.string.stat_limit_alert))
 					.setContentIntent(pIntent).setContentText(status_label)
 					.setSmallIcon(icon).setAutoCancel(false)
 					.setPriority(Notification.PRIORITY_HIGH)
-					.setVibrate(new long[] { 0, 1000 })
-					.setLights(Color.RED, 3000, 3000).build();
+					.setVibrate(new long[] { 0, 500 })
+					.setLights(Color.RED, 1000, 1000).build();
 		} else {
 			long when = System.currentTimeMillis();
-			CharSequence contentTitle = getString(R.string.status_title_label);
+			CharSequence contentTitle = getString(R.string.stat_limit_alert);
 			CharSequence text = getString(R.string.app_name);
 			CharSequence contentText = status_label;
 

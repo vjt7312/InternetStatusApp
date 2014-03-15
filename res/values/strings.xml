@@ -3,14 +3,17 @@
 
     <string name="app_name">Internet Status Monitor</string>
     <string name="url_label">Query URL</string>
-    <string name="interval_label">Auto query interval (seconds)</string>
+    <string name="interval_label">Check frquency</string>
+    <string name="interval_0_label">Low</string>
+    <string name="interval_1_label">Medium</string>
+    <string name="interval_2_label">High</string>
     <string name="interval_validation_error">The interval must be in the range 2 to 65535.</string>
     <string name="url_validation_error">Invalid URL.</string>
     <string name="status_title_label">Internet status</string>
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">Offline</string>
     <string name="status_bad_label">Bad</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
@@ -19,6 +22,7 @@
     <string name="stat_rx_total_label">RX total(MB):</string>
     <string name="stat_reset_label">Reset</string>
     <string name="stat_setup_label">Setup</string>
+    <string name="stat_limit_alert">Limitation alert</string>
     <string name="stat_setup_title_label">Set limitation alert(MB):</string>
     <string name="stat_limit_label">Limitation alert(MB):</string>
     <string name="stat_limit_up_exceed_label">Upload limitation %1$s MB exceeded</string>
@@ -31,7 +35,6 @@
     <string name="ntw_state_label">Network State:</string>
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">None</string>
-    
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">Mobile network</string>
     <string name="true_label">Yes</string>

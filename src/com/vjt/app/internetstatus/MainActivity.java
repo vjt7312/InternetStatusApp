@@ -467,10 +467,12 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 								.setBackgroundResource(R.layout.alert_background);
 					} else {
 						mTXLayout.setBackground(null);
+						mTXLayout.setPadding(0, 0, 0, 0);
 					}
 				}
 			} catch (Exception e) {
 				mTXLayout.setBackground(null);
+				mTXLayout.setPadding(0, 0, 0, 0);
 			}
 		}
 		if (rx) {
@@ -484,10 +486,12 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 								.setBackgroundResource(R.layout.alert_background);
 					} else {
 						mRXLayout.setBackground(null);
+						mRXLayout.setPadding(0, 0, 0, 0);
 					}
 				}
 			} catch (Exception e) {
 				mRXLayout.setBackground(null);
+				mRXLayout.setPadding(0, 0, 0, 0);
 			}
 		}
 

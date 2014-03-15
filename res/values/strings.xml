@@ -21,6 +21,7 @@
     <string name="stat_tx_total_label">TX total(MB):</string>
     <string name="stat_rx_total_label">RX total(MB):</string>
     <string name="stat_reset_label">Reset</string>
+    
     <string name="stat_setup_label">Setup</string>
     <string name="stat_limit_alert">Limitation alert</string>
     <string name="stat_setup_title_label">Set limitation alert(MB):</string>
@@ -35,6 +36,7 @@
     <string name="ntw_state_label">Network State:</string>
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">None</string>
+    
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">Mobile network</string>
     <string name="true_label">Yes</string>
@@ -54,6 +56,6 @@
     <string name="interval_2_default">4</string>
     <string name="interval_3_default">6</string>
     <string name="interval_4_default">10</string>
-    <string name="bad_interval_default">500</string>
+    <string name="bad_interval_default">600</string>
 
 </resources>

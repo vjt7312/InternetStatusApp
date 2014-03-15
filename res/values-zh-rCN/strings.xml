@@ -3,7 +3,10 @@
 
     <string name="app_name">网路状态监控</string>
     <string name="url_label">查询网址</string>
-    <string name="interval_label">自动查询间隔 (秒)</string>
+    <string name="interval_label">检查频率</string>
+    <string name="interval_0_label">低</string>
+    <string name="interval_1_label">中</string>
+    <string name="interval_2_label">高</string>
     <string name="interval_validation_error">间隔必须介于2到65535.</string>
     <string name="url_validation_error">无效的URL.</string>
     <string name="status_title_label">网络状态</string>
@@ -17,7 +20,16 @@
     <string name="stat_unsupport">装置不支持</string>
     <string name="stat_tx_total_label">总上传MB:</string>
     <string name="stat_rx_total_label">总下载MB:</string>
-    <string name="stat_reset_label">重设</string>
+    <string name="stat_reset_label">归零</string>
+    
+    <string name="stat_setup_label">设定</string>
+    <string name="stat_limit_alert">限制通知</string>
+    <string name="stat_setup_title_label">设定限制通知(MB):</string>
+    <string name="stat_limit_label">限制通知(MB):</string>
+    <string name="stat_limit_up_exceed_label">上传已超过 %1$s MB</string>
+    <string name="stat_limit_down_exceed_label">下载已超过 %1$s MB</string>
+    <string name="stat_ok_label">确定</string>
+    <string name="stat_cancel_label">取消</string>
 
     <!-- pro -->
     <string name="ntw_type_label">网络类型:</string>

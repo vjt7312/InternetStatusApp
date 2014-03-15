@@ -3,7 +3,10 @@
 
     <string name="app_name">Internet Status Monitor</string>
     <string name="url_label">Abfrage-URL</string>
-    <string name="interval_label">Auto Abfrageintervall (Sekunden)</string>
+    <string name="interval_label">frquency prüfen</string>
+    <string name="interval_0_label">niedrig</string>
+    <string name="interval_1_label">Medium</string>
+    <string name="interval_2_label">hoch</string>
     <string name="interval_validation_error">Das Intervall muss im Bereich von 2 bis 65535 sein.</string>
     <string name="url_validation_error">Ungültige URL.</string>
     <string name="status_title_label">Internet-Status</string>
@@ -12,20 +15,27 @@
     <string name="status_bad_label">schlecht</string>
     
     <!-- stat -->
-    <string name="stat_tx_label">TX Bytes / sec:</string>
-    <string name="stat_rx_label">RX Bytes / sec:</string>
+    <string name="stat_tx_label">TX Bytes/sec:</string>
+    <string name="stat_rx_label">RX Bytes/sec:</string>
     <string name="stat_unsupport">Gerät nicht unterstützt</string>
-
-<string name="stat_tx_total_label">TX MB Gesamt:</string>
-    <string name="stat_rx_total_label">RX MB Gesamt:</string>
+    <string name="stat_tx_total_label">TX Gesamt(MB):</string>
+    <string name="stat_rx_total_label">RX Gesamt(MB):</string>
     <string name="stat_reset_label">rücksetzen</string>
+    
+    <string name="stat_setup_label">Setup-</string>
+    <string name="stat_limit_alert">Begrenzung Benachrichtigung</string>
+    <string name="stat_setup_title_label">Stellen Begrenzung alert(MB):</string>
+    <string name="stat_limit_label">Begrenzung alert(MB):</string>
+    <string name="stat_limit_up_exceed_label">Einschränkung Upload %1$s MB überschritten</string>
+    <string name="stat_limit_down_exceed_label">Laden Beschränkung% %1$s MB überschritten</string>
+    <string name="stat_ok_label">Ok</string>
+    <string name="stat_cancel_label">stornieren</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Netzwerktyp:</string>
     <string name="ntw_state_label">Netzwerkstatus:</string>
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">keiner</string>
-
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">Mobile-Netz</string>
     <string name="true_label">ja </string>

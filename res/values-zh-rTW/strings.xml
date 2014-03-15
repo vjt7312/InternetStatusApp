@@ -3,29 +3,40 @@
 
     <string name="app_name">網路狀態監控</string>
     <string name="url_label">查詢網址</string>
-    <string name="interval_label">自動查詢間隔 (秒)</string>
+    <string name="interval_label">檢查頻率</string>
+    <string name="interval_0_label">低</string>
+    <string name="interval_1_label">中</string>
+    <string name="interval_2_label">高</string>
     <string name="interval_validation_error">間隔必須介於2到65535.</string>
     <string name="url_validation_error">無效的URL.</string>
     <string name="status_title_label">網路狀態</string>
     <string name="status_online_label">連線</string>
     <string name="status_offline_label">斷線</string>
     <string name="status_bad_label">差</string>
-
+    
     <!-- stat -->
     <string name="stat_tx_label">每秒上傳位元組:</string>
     <string name="stat_rx_label">每秒下載位元組:</string>
     <string name="stat_unsupport">裝置不支援</string>
-
-<string name="stat_tx_total_label">總上傳MB:</string>
+    <string name="stat_tx_total_label">總上傳MB:</string>
     <string name="stat_rx_total_label">總下載MB:</string>
-    <string name="stat_reset_label">重設</string>
+    <string name="stat_reset_label">歸零</string>
+    
+    <string name="stat_setup_label">設定</string>
+    <string name="stat_limit_alert">限制通知</string>
+    <string name="stat_setup_title_label">設定限制通知(MB):</string>
+    <string name="stat_limit_label">限制通知(MB):</string>
+    <string name="stat_limit_up_exceed_label">上傳已超過 %1$s MB</string>
+    <string name="stat_limit_down_exceed_label">下載已超過 %1$s MB</string>
+    <string name="stat_ok_label">確定</string>
+    <string name="stat_cancel_label">取消</string>
 
     <!-- pro -->
     <string name="ntw_type_label">網路類型:</string>
     <string name="ntw_state_label">網路狀態:</string>
     <string name="ntw_roam_label">漫遊:</string>
     <string name="ntw_none_label">無</string>
-
+    
     <string name="wifi_label">無線網絡 </string>
     <string name="mobile_label">移動網絡</string>
     <string name="true_label">是</string>

@@ -3,7 +3,10 @@
 
     <string name="app_name">Internet Status Monitor</string>
     <string name="url_label">Query URL</string>
-    <string name="interval_label">Auto query interval (seconds)</string>
+    <string name="interval_label">Check frquency</string>
+    <string name="interval_0_label">Low</string>
+    <string name="interval_1_label">Medium</string>
+    <string name="interval_2_label">High</string>
     <string name="interval_validation_error">The interval must be in the range 2 to 65535.</string>
     <string name="url_validation_error">Invalid URL.</string>
     <string name="status_title_label">Internet status</string>
@@ -15,17 +18,25 @@
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">Device unsupported</string>
-
-<string name="stat_tx_total_label">TX MB total:</string>
-    <string name="stat_rx_total_label">RX MB total:</string>
+    <string name="stat_tx_total_label">TX total(MB):</string>
+    <string name="stat_rx_total_label">RX total(MB):</string>
     <string name="stat_reset_label">Reset</string>
+    
+    <string name="stat_setup_label">Setup</string>
+    <string name="stat_limit_alert">Limitation alert</string>
+    <string name="stat_setup_title_label">Set limitation alert(MB):</string>
+    <string name="stat_limit_label">Limitation alert(MB):</string>
+    <string name="stat_limit_up_exceed_label">Upload limitation %1$s MB exceeded</string>
+    <string name="stat_limit_down_exceed_label">Download limitation %1$s MB exceeded</string>
+    <string name="stat_ok_label">OK</string>
+    <string name="stat_cancel_label">Cancel</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Network Type:</string>
     <string name="ntw_state_label">Network State:</string>
     <string name="ntw_roam_label">Roaming:</string>
     <string name="ntw_none_label">None</string>
-
+    
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">Mobile network</string>
     <string name="true_label">Yes</string>
@@ -45,6 +56,6 @@
     <string name="interval_2_default">4</string>
     <string name="interval_3_default">6</string>
     <string name="interval_4_default">10</string>
-    <string name="bad_interval_default">1</string>
+    <string name="bad_interval_default">600</string>
 
 </resources>

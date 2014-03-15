@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -66,6 +67,8 @@ public class InternetService extends Service {
 	private static final int NET_STAT_HIGH_THRESHOLD = 1024 * 512;
 
 	private final int NOTIFICATIONID = 7696;
+	private final int ALERTUPID = 7697;
+	private final int ALERTDOWNID = 7698;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
@@ -181,6 +184,59 @@ public class InternetService extends Service {
 		nm.cancelAll();
 	}
 
+	private void setupAlert(boolean isUp, int limit) {
+		String ns = Context.NOTIFICATION_SERVICE;
+		int icon;
+		String status_label;
+
+		NotificationManager nm = (NotificationManager) getSystemService(ns);
+		if (isUp) {
+			icon = R.drawable.limit_up;
+			status_label = String.format(
+					getResources().getString(
+							R.string.stat_limit_up_exceed_label),
+					Integer.toString(limit));
+		} else {
+			icon = R.drawable.limit_down;
+			status_label = String.format(
+					getResources().getString(
+							R.string.stat_limit_down_exceed_label),
+					Integer.toString(limit));
+		}
+
+		Intent intent = new Intent(this, MainActivity.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
+			mNoti = ((Notification.Builder) mBuilder)
+					.setContentTitle(getString(R.string.stat_limit_alert))
+					.setContentIntent(pIntent).setContentText(status_label)
+					.setSmallIcon(icon).setAutoCancel(false)
+					.setPriority(Notification.PRIORITY_HIGH)
+					.setVibrate(new long[] { 0, 500 })
+					.setLights(Color.RED, 1000, 1000).build();
+		} else {
+			long when = System.currentTimeMillis();
+			CharSequence contentTitle = getString(R.string.stat_limit_alert);
+			CharSequence text = getString(R.string.app_name);
+			CharSequence contentText = status_label;
+
+			mNoti.icon = icon;
+			mNoti.when = when;
+			mNoti.tickerText = text;
+			mNoti.defaults |= Notification.DEFAULT_SOUND;
+			mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
+		}
+		mNoti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+		mNoti.flags |= Notification.FLAG_AUTO_CANCEL;
+		if (isUp) {
+			nm.notify(ALERTUPID, mNoti);
+		} else {
+			nm.notify(ALERTDOWNID, mNoti);
+		}
+	}
+
 	public class NetTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {
@@ -188,9 +244,8 @@ public class InternetService extends Service {
 			try {
 				synchronized (this) {
 					serviceState = STATE_WAITING;
-					mHandler.sendEmptyMessageDelayed(
-							MSG_CHECK_TIMEOUT,
-							Integer.valueOf(getString(R.string.bad_interval_default)) * 1000);
+					mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT, Integer
+							.valueOf(getString(R.string.bad_interval_default)));
 
 					addr = InetAddress.getByName(params[0]);
 					serviceState = STATE_NONE;
@@ -492,6 +547,29 @@ public class InternetService extends Service {
 		LogUtil.i(TAG, "RX = " + mRxTotal);
 	}
 
+	private void limitCheck() {
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean fire_up = settings.getBoolean("fire_up", false);
+		int limit_up = settings.getInt("limit_up", 0);
+		if (!fire_up && limit_up > 0 && mTXTotal >= limit_up * 1000000) {
+			setupAlert(true, limit_up);
+
+			final SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("fire_up", true);
+			editor.commit();
+		}
+		boolean fire_down = settings.getBoolean("fire_down", false);
+		int limit_down = settings.getInt("limit_down", 0);
+		if (!fire_down && limit_down > 0 && mRXTotal >= limit_down * 1000000) {
+			setupAlert(false, limit_down);
+
+			final SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("fire_down", true);
+			editor.commit();
+		}
+	}
+
 	private void doStat(boolean isFirst, boolean countOldData) {
 
 		long rxTotal = mRxTotal;
@@ -503,6 +581,7 @@ public class InternetService extends Service {
 			if (countOldData && (rxTotal > 0 || txTotal > 0)) {
 				mRXTotal += mRxTotal - rxTotal;
 				mTXTotal += mTxTotal - txTotal;
+				limitCheck();
 				Intent i = new Intent(ACTION_STAT);
 				i.putExtra("rx", mRxSec);
 				i.putExtra("tx", mTxSec);
@@ -536,6 +615,7 @@ public class InternetService extends Service {
 			mTxSec = mTxTotal - txTotal;
 			mRXTotal += mRxSec;
 			mTXTotal += mTxSec;
+			limitCheck();
 			Intent i = new Intent(ACTION_STAT);
 			i.putExtra("rx", mRxSec);
 			i.putExtra("tx", mTxSec);

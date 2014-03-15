@@ -1,8 +1,10 @@
 package com.vjt.app.internetstatus;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,12 +12,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -42,8 +47,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 	TextView mRX;
 	TextView mTXTotal;
 	TextView mRXTotal;
+	TextView mTXLimit;
+	TextView mRXLimit;
 	Button mTXReset;
 	Button mRXReset;
+	Button mTXSetup;
+	Button mRXSetup;
+	RelativeLayout mTXLayout;
+	RelativeLayout mRXLayout;
 
 	boolean mOnOff;
 
@@ -90,8 +101,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mRX = (TextView) findViewById(R.id.stat_rx);
 		mTXTotal = (TextView) findViewById(R.id.stat_tx_total);
 		mRXTotal = (TextView) findViewById(R.id.stat_rx_total);
+		mTXLimit = (TextView) findViewById(R.id.stat_tx_limit);
+		mRXLimit = (TextView) findViewById(R.id.stat_rx_limit);
 		mTXReset = (Button) findViewById(R.id.stat_tx_btn);
 		mRXReset = (Button) findViewById(R.id.stat_rx_btn);
+		mTXSetup = (Button) findViewById(R.id.stat_set_tx_btn);
+		mRXSetup = (Button) findViewById(R.id.stat_set_rx_btn);
+		mTXLayout = (RelativeLayout) findViewById(R.id.tx_layout);
+		mRXLayout = (RelativeLayout) findViewById(R.id.rx_layout);
 
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -100,6 +117,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mTXReset.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (mOnOff) {
+					editor.putBoolean("fire_up", false);
+					editor.commit();
+
 					Intent serverService = new Intent(MainActivity.this,
 							InternetService.class);
 					serverService.setAction(InternetService.ACTION_RESET_TX);
@@ -107,7 +127,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 				} else {
 					mTXTotal.setText("0");
 					editor.putLong("tx_total", 0);
+					editor.putBoolean("fire_up", false);
 					editor.commit();
+					steStatLayoutBorder(true, false);
 				}
 			}
 		});
@@ -115,6 +137,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mRXReset.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (mOnOff) {
+					editor.putBoolean("fire_down", false);
+					editor.commit();
+
 					Intent serverService = new Intent(MainActivity.this,
 							InternetService.class);
 					serverService.setAction(InternetService.ACTION_RESET_RX);
@@ -122,8 +147,118 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 				} else {
 					mRXTotal.setText("0");
 					editor.putLong("rx_total", 0);
+					editor.putBoolean("fire_down", false);
 					editor.commit();
+					steStatLayoutBorder(false, true);
 				}
+			}
+		});
+
+		mTXSetup.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				LayoutInflater li = LayoutInflater.from(MainActivity.this);
+				View promptsView = li.inflate(R.layout.limit, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						MainActivity.this);
+				alertDialogBuilder.setView(promptsView);
+				final EditText userInput = (EditText) promptsView
+						.findViewById(R.id.input_limit);
+				alertDialogBuilder
+						.setCancelable(false)
+						.setPositiveButton(getString(R.string.stat_ok_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										int limit_up;
+										try {
+											limit_up = Integer
+													.parseInt(userInput
+															.getText()
+															.toString()
+															.replaceFirst(
+																	"^0+(?!$)",
+																	""));
+										} catch (Exception e) {
+											limit_up = 0;
+										}
+										SharedPreferences settings = PreferenceManager
+												.getDefaultSharedPreferences(MainActivity.this);
+										final SharedPreferences.Editor editor = settings
+												.edit();
+										editor.putInt("limit_up", limit_up);
+										editor.putBoolean("fire_up", false);
+					editor.commit();
+
+										mTXLimit.setText(limit_up == 0 ? "----"
+												: String.valueOf(limit_up));
+										steStatLayoutBorder(true, false);
+									}
+								})
+						.setNegativeButton(
+								getString(R.string.stat_cancel_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
+		});
+
+		mRXSetup.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				LayoutInflater li = LayoutInflater.from(MainActivity.this);
+				View promptsView = li.inflate(R.layout.limit, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						MainActivity.this);
+				alertDialogBuilder.setView(promptsView);
+				final EditText userInput = (EditText) promptsView
+						.findViewById(R.id.input_limit);
+				alertDialogBuilder
+						.setCancelable(false)
+						.setPositiveButton(getString(R.string.stat_ok_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										int limit_down;
+										try {
+											limit_down = Integer
+													.parseInt(userInput
+															.getText()
+															.toString()
+															.replaceFirst(
+																	"^0+(?!$)",
+																	""));
+										} catch (Exception e) {
+											limit_down = 0;
+										}
+										SharedPreferences settings = PreferenceManager
+												.getDefaultSharedPreferences(MainActivity.this);
+										final SharedPreferences.Editor editor = settings
+												.edit();
+										editor.putInt("limit_down", limit_down);
+										editor.putBoolean("fire_down", false);
+										editor.commit();
+										mRXLimit.setText(limit_down == 0 ? "----"
+												: String.valueOf(limit_down));
+										steStatLayoutBorder(false, true);
+
+				}
+								})
+						.setNegativeButton(
+								getString(R.string.stat_cancel_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
 			}
 		});
 
@@ -139,6 +274,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 		mTXTotal.setText(Float.toString(tx_total));
 		mRXTotal.setText(Float.toString(rx_total));
+
+		int limit_up = settings.getInt("limit_up", 0);
+		int limit_down = settings.getInt("limit_down", 0);
+
+		mTXLimit.setText(limit_up == 0 ? "----" : Integer.toString(limit_up));
+		mRXLimit.setText(limit_down == 0 ? "----" : Integer
+				.toString(limit_down));
+		steStatLayoutBorder(true, true);
 
 		mOnOff = settings.getString("onoff", getString(R.string.onoff_default))
 				.equals("on");
@@ -247,6 +390,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 		mTXTotal.setText("0");
 		mRXTotal.setText("0");
+		steStatLayoutBorder(true, true);
 
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -305,6 +449,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 					mTXTotal.setText(Float.toString(tx_total));
 					mRXTotal.setText(Float.toString(rx_total));
+					steStatLayoutBorder(true, true);
 				}
 			}
 		}
@@ -339,7 +484,49 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
 	}
 
-	@Override
+	private void steStatLayoutBorder(boolean tx, boolean rx) {
+		if (tx) {
+			try {
+				int txLimit = Integer.parseInt(mTXLimit.getText().toString());
+				if (txLimit > 0) {
+					float txTotal = Float.parseFloat(mTXTotal.getText()
+							.toString());
+					if (txTotal >= (float) txLimit) {
+						mTXLayout
+								.setBackgroundResource(R.layout.alert_background);
+					} else {
+						mTXLayout.setBackground(null);
+						mTXLayout.setPadding(0, 0, 0, 0);
+					}
+				}
+			} catch (Exception e) {
+				mTXLayout.setBackground(null);
+				mTXLayout.setPadding(0, 0, 0, 0);
+			}
+		}
+		if (rx) {
+			try {
+				int rxLimit = Integer.parseInt(mRXLimit.getText().toString());
+				if (rxLimit > 0) {
+					float txTotal = Float.parseFloat(mRXTotal.getText()
+							.toString());
+					if (txTotal >= (float) rxLimit) {
+						mRXLayout
+								.setBackgroundResource(R.layout.alert_background);
+					} else {
+						mRXLayout.setBackground(null);
+						mRXLayout.setPadding(0, 0, 0, 0);
+					}
+				}
+			} catch (Exception e) {
+				mRXLayout.setBackground(null);
+				mRXLayout.setPadding(0, 0, 0, 0);
+			}
+		}
+
+	}
+
+        @Override
 	public void onDestroy() {
 		adView.destroy();
 		super.onDestroy();

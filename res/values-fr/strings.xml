@@ -3,7 +3,10 @@
 
     <string name="app_name">Internet Monitor Status</string>
     <string name="url_label">requête URL</string>
-    <string name="interval_label">Intervalle de requête automatique (secondes)</string>
+    <string name="interval_label">Vérifiez frquency</string>
+    <string name="interval_0_label">faible</string>
+    <string name="interval_1_label">moyen</string>
+    <string name="interval_2_label">haut</string>
     <string name="interval_validation_error">L\'intervalle doit être compris entre 2 et 65535.</string>
     <string name="url_validation_error">URL invalide.</string>
     <string name="status_title_label">Statut d\'Internet</string>
@@ -12,20 +15,28 @@
     <string name="status_bad_label">mauvais</string>
     
     <!-- stat -->
-    <string name="stat_tx_label">TX octets / sec:</string>
-    <string name="stat_rx_label">RX octets / sec:</string>
+    <string name="stat_tx_label">TX octets/sec:</string>
+    <string name="stat_rx_label">RX octets/sec:</string>
     <string name="stat_unsupport">pas prise en charge</string>
-
-<string name="stat_tx_total_label">TX Mo au total:</string>
-    <string name="stat_rx_total_label">RX Mo au total:</string>
+    <string name="stat_tx_total_label">TX au total(Mo):</string>
+    <string name="stat_rx_total_label">RX au total(Mo):</string>
     <string name="stat_reset_label">remettre</string>
+    
+    <string name="stat_setup_label">installation</string>
+    <string name="stat_limit_alert">limitation alerte</string>
+    <string name="stat_setup_title_label">Alerte de prescription fixé(Mo):</string>
+    <string name="stat_limit_label">Limitation alerte(Mo):</string>
+    <string name="stat_limit_up_exceed_label">Téléchargez limitation de %1$s Mo dépassé</string>
+    <string name="stat_limit_down_exceed_label">Télécharger limitation% %1$s Mo dépassé</string>
+    <string name="stat_ok_label">bien</string>
+    <string name="stat_cancel_label">annuler</string>
 
     <!-- pro -->
     <string name="ntw_type_label">Type de réseau:</string>
     <string name="ntw_state_label">État du réseau:</string>
     <string name="ntw_roam_label">roaming:</string>
     <string name="ntw_none_label">aucun</string>
-
+    
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">réseau mobile</string>
     <string name="true_label">oui</string>

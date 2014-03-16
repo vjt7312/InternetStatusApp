@@ -261,7 +261,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="@string/stat_reset_label" />
-                            <Button
+                                            <Button
                     android:id="@+id/stat_set_tx_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
@@ -328,7 +328,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:text="@string/stat_reset_label" />
-                            <Button
+                                            <Button
                     android:id="@+id/stat_set_rx_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"

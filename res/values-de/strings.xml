@@ -13,7 +13,7 @@
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">offline</string>
     <string name="status_bad_label">schlecht</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">TX Bytes/sec:</string>
     <string name="stat_rx_label">RX Bytes/sec:</string>
@@ -21,7 +21,6 @@
     <string name="stat_tx_total_label">TX Gesamt(MB):</string>
     <string name="stat_rx_total_label">RX Gesamt(MB):</string>
     <string name="stat_reset_label">rücksetzen</string>
-    
     <string name="stat_setup_label">Setup-</string>
     <string name="stat_limit_alert">Begrenzung Benachrichtigung</string>
     <string name="stat_setup_title_label">Stellen Begrenzung alert(MB):</string>
@@ -46,5 +45,15 @@
     <string name="type_3_label">Trennen</string>
     <string name="type_4_label">getrennt</string>
     <string name="type_5_label">unbekannt</string>
+    
+    <string name="action_settings">Einstellungen</string>
+    <string name="settings_alert">Alarmeinstellungen</string>
+    <string name="settings_vibrator">Vibrator</string>
+    <string name="settings_off">aus</string>
+    <string name="settings_long">lange</string>
+    <string name="settings_light">Licht</string>
+    <string name="settings_fast">schnell</string>
+    <string name="settings_sound">klingen</string>
+    <string name="settings_on">auf</string>
 
 </resources>

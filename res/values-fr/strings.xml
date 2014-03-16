@@ -13,7 +13,7 @@
     <string name="status_online_label">en ligne</string>
     <string name="status_offline_label">Hors ligne</string>
     <string name="status_bad_label">mauvais</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">TX octets/sec:</string>
     <string name="stat_rx_label">RX octets/sec:</string>
@@ -21,7 +21,6 @@
     <string name="stat_tx_total_label">TX au total(Mo):</string>
     <string name="stat_rx_total_label">RX au total(Mo):</string>
     <string name="stat_reset_label">remettre</string>
-    
     <string name="stat_setup_label">installation</string>
     <string name="stat_limit_alert">limitation alerte</string>
     <string name="stat_setup_title_label">Alerte de prescription fixé(Mo):</string>
@@ -36,7 +35,6 @@
     <string name="ntw_state_label">État du réseau:</string>
     <string name="ntw_roam_label">roaming:</string>
     <string name="ntw_none_label">aucun</string>
-    
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">réseau mobile</string>
     <string name="true_label">oui</string>
@@ -47,5 +45,15 @@
     <string name="type_3_label">Déconnexion</string>
     <string name="type_4_label">coupé</string>
     <string name="type_5_label">inconnu</string>
+    
+    <string name="action_settings">paramètres</string>
+    <string name="settings_alert">Paramètres d\'alerte</string>
+    <string name="settings_vibrator">vibreur</string>
+    <string name="settings_off">de</string>
+    <string name="settings_long">long</string>
+    <string name="settings_light">lumière</string>
+    <string name="settings_fast">rapide</string>
+    <string name="settings_sound">son</string>
+    <string name="settings_on">sur</string>
 
 </resources>

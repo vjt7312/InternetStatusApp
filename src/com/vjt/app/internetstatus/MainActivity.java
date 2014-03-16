@@ -2,6 +2,7 @@ package com.vjt.app.internetstatus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -299,6 +302,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			editor.commit();
 			stopServer();
 		}
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(InternetService.ALERTUPID);
+		nm.cancel(InternetService.ALERTDOWNID);
 	}
 
 	private void startServer() {
@@ -540,7 +546,24 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 				mRXLayout.setPadding(0, 0, 0, 0);
 			}
 		}
+	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+        @Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent launchNewIntent = new Intent(MainActivity.this,
+					Settings.class);
+			startActivityForResult(launchNewIntent, 0);
+			break;
+		}
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	@Override

@@ -43,7 +43,7 @@
                 android:id="@+id/vibrator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="1"
+                android:max="4"
                 android:paddingTop="10dp"
                 android:progress="1" />
 
@@ -66,7 +66,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/settings_on"
+                    android:text="@string/interval_1_label"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/settings_long"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
         </LinearLayout>
@@ -93,7 +101,7 @@
                 android:id="@+id/light"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="1"
+                android:max="4"
                 android:paddingTop="10dp"
                 android:progress="1" />
 
@@ -116,7 +124,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/settings_on"
+                    android:text="@string/interval_1_label"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/settings_fast"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
         </LinearLayout>

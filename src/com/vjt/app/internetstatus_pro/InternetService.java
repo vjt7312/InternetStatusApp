@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -69,9 +68,9 @@ public class InternetService extends Service {
 	private static final int NET_STAT_INTERVAL = 1000;
 	private static final int NET_STAT_HIGH_THRESHOLD = 1024 * 512;
 
-	private final int NOTIFICATIONID = 7696;
-	private final int ALERTUPID = 7697;
-	private final int ALERTDOWNID = 7698;
+	private static final int NOTIFICATIONID = 7696;
+	public static final int ALERTUPID = 7697;
+	public static final int ALERTDOWNID = 7698;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
@@ -82,7 +81,6 @@ public class InternetService extends Service {
 	private static int mInterval;
 	private static String mURL;
 	private static boolean mOnOff;
-	private Object mBuilder;
 	private Notification mNoti = new Notification();
 
 	// pro
@@ -154,8 +152,10 @@ public class InternetService extends Service {
 		PendingIntent pIntent = PendingIntent
 				.getActivity(context, 0, intent, 0);
 
-		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
-			mNoti = ((Notification.Builder) mBuilder)
+		if (Build.VERSION.SDK_INT >= 16) {
+			Notification.Builder builder = new Notification.Builder(this);
+
+			mNoti = builder
 					.setContentTitle(
 							context.getString(R.string.status_title_label))
 					.setContentIntent(pIntent)
@@ -257,21 +257,23 @@ public class InternetService extends Service {
 		Intent intent = new Intent(this, MainActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
+		if (Build.VERSION.SDK_INT >= 16) {
+			Notification.Builder builder = new Notification.Builder(this);
+
 			int vibrator = getVibrator();
 			if (vibrator > 0) {
-				((Builder) mBuilder).setVibrate(new long[] { 0, vibrator });
+				builder.setVibrate(new long[] { 0, vibrator });
 			}
 			int light = getLight();
 			if (light > 0) {
-				((Builder) mBuilder).setLights(Color.RED, light, light).build();
+				builder.setLights(Color.RED, light, light).build();
 			}
 			if (getSound() > 0) {
 				Uri uri = RingtoneManager
 						.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-				((Builder) mBuilder).setSound(uri).build();
+				builder.setSound(uri).build();
 			}
-			mNoti = ((Notification.Builder) mBuilder)
+			mNoti = builder
 					.setContentTitle(getString(R.string.stat_limit_alert))
 					.setContentIntent(pIntent).setContentText(status_label)
 					.setSmallIcon(icon).setAutoCancel(false)
@@ -279,7 +281,7 @@ public class InternetService extends Service {
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = getString(R.string.stat_limit_alert);
-			CharSequence text = getString(R.string.app_name);
+			CharSequence text = status_label;
 			CharSequence contentText = status_label;
 
 			mNoti.icon = icon;
@@ -376,8 +378,6 @@ public class InternetService extends Service {
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		registerReceiver(receiver, filter);
-		if (Build.VERSION.SDK_INT >= 16)
-			mBuilder = new Notification.Builder(this);
 
 		// pro
 		mNetworkConnectivityListener = new NetworkConnectivityListener();

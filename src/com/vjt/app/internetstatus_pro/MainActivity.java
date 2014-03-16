@@ -2,6 +2,7 @@ package com.vjt.app.internetstatus_pro;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -272,6 +273,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			editor.commit();
 			stopServer();
 		}
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(InternetService.ALERTUPID);
+		nm.cancel(InternetService.ALERTDOWNID);
 	}
 
 	private void startServer() {

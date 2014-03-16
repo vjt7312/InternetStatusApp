@@ -70,9 +70,9 @@
     <string name="vibration_3_default">1500</string>
     <string name="vibration_4_default">3000</string>
     <string name="light_0_default">0</string>
-    <string name="light_1_default">200</string>
-    <string name="light_2_default">500</string>
-    <string name="light_3_default">1500</string>
-    <string name="light_4_default">3000</string>
+    <string name="light_1_default">3000</string>
+    <string name="light_2_default">1500</string>
+    <string name="light_3_default">500</string>
+    <string name="light_4_default">200</string>
 
 </resources>

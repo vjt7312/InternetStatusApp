@@ -13,16 +13,14 @@
     <string name="status_online_label">オンライン</string>
     <string name="status_offline_label">オフライン</string>
     <string name="status_bad_label">貧しい</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">送信バイト/秒：</string>
     <string name="stat_rx_label">受信バイト/秒：</string>
     <string name="stat_unsupport">デバイスサポートされていない</string>
-
-<string name="stat_tx_total_label">アップロード MB:</string>
+    <string name="stat_tx_total_label">アップロード MB:</string>
     <string name="stat_rx_total_label">ダウンロード MB:</string>
     <string name="stat_reset_label">ゼロ</string>
-    
     <string name="stat_setup_label">セット</string>
     <string name="stat_limit_alert">制限通知</string>
     <string name="stat_setup_title_label">設定の制限の通知(MB):</string>
@@ -37,7 +35,6 @@
     <string name="ntw_state_label">ネットワーク状態：</string>
     <string name="ntw_roam_label">ローミング： </string>
     <string name="ntw_none_label">なし</string>
-
     <string name="wifi_label">ワイヤレスネットワーク</string>
     <string name="mobile_label">携帯電話ネットワーク</string>
     <string name="true_label">ある</string>
@@ -48,5 +45,15 @@
     <string name="type_3_label">押し入る</string>
     <string name="type_4_label">切断された</string>
     <string name="type_5_label">不明</string>
+    
+    <string name="action_settings">セット</string>
+    <string name="settings_alert">通知設定</string>
+    <string name="settings_vibrator">ショック</string>
+    <string name="settings_off">クローズ</string>
+    <string name="settings_long">ロング</string>
+    <string name="settings_light">LED</string>
+    <string name="settings_fast">速い</string>
+    <string name="settings_sound">サウンド</string>
+    <string name="settings_on">オープン</string>
 
 </resources>

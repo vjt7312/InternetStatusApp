@@ -13,16 +13,14 @@
     <string name="status_online_label">连线</string>
     <string name="status_offline_label">断线</string>
     <string name="status_bad_label">差</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">每秒上传位元组:</string>
     <string name="stat_rx_label">每秒下载位元组:</string>
     <string name="stat_unsupport">装置不支持</string>
-
-<string name="stat_tx_total_label">总上传MB:</string>
+    <string name="stat_tx_total_label">总上传MB:</string>
     <string name="stat_rx_total_label">总下载MB:</string>
     <string name="stat_reset_label">归零</string>
-    
     <string name="stat_setup_label">设定</string>
     <string name="stat_limit_alert">限制通知</string>
     <string name="stat_setup_title_label">设定限制通知(MB):</string>
@@ -37,7 +35,6 @@
     <string name="ntw_state_label">网络状态:</string>
     <string name="ntw_roam_label">漫游:</string>
     <string name="ntw_none_label">无</string>
-
     <string name="wifi_label">无线网络</string>
     <string name="mobile_label">移动网络</string>
     <string name="true_label">是</string>
@@ -48,5 +45,15 @@
     <string name="type_3_label">断线中</string>
     <string name="type_4_label">已断线</string>
     <string name="type_5_label">未知</string>
+    
+    <string name="action_settings">设定</string>
+    <string name="settings_alert">通知设定</string>
+    <string name="settings_vibrator">震动</string>
+    <string name="settings_off">关</string>
+    <string name="settings_long">长</string>
+    <string name="settings_light">LED</string>
+    <string name="settings_fast">快</string>
+    <string name="settings_sound">声音</string>
+    <string name="settings_on">开</string>
 
 </resources>

@@ -13,16 +13,14 @@
     <string name="status_online_label">Online</string>
     <string name="status_offline_label">desconectado</string>
     <string name="status_bad_label">malo</string>
-    
+
     <!-- stat -->
     <string name="stat_tx_label">TX bytes/sec:</string>
     <string name="stat_rx_label">RX bytes/sec:</string>
     <string name="stat_unsupport">dispositivo no admitido</string>
-
-<string name="stat_tx_total_label">TX en total(MB):</string>
+    <string name="stat_tx_total_label">TX en total(MB):</string>
     <string name="stat_rx_total_label">RX en total(MB):</string>
     <string name="stat_reset_label">reajustar</string>
-
     <string name="stat_setup_label">disposición</string>
     <string name="stat_limit_alert">alerta Limitación</string>
     <string name="stat_setup_title_label">Establecer alerta limitación(MB):</string>
@@ -37,7 +35,6 @@
     <string name="ntw_state_label">Estado de la red:</string>
     <string name="ntw_roam_label">itinerancia:</string>
     <string name="ntw_none_label">ninguno</string>
-
     <string name="wifi_label">Wi-Fi</string>
     <string name="mobile_label">red móvil</string>
     <string name="true_label">sí</string>
@@ -48,5 +45,15 @@
     <string name="type_3_label">Desconexión</string>
     <string name="type_4_label">desconectado</string>
     <string name="type_5_label">desconocido</string>
+    
+    <string name="action_settings">Configuración</string>
+    <string name="settings_alert">Configuración de alertas</string>
+    <string name="settings_vibrator">vibrador</string>
+    <string name="settings_off">apagado</string>
+    <string name="settings_long">largo</string>
+    <string name="settings_light">luz</string>
+    <string name="settings_fast">rápido</string>
+    <string name="settings_sound">sonido</string>
+    <string name="settings_on">en</string>
 
 </resources>

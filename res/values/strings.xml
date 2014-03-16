@@ -45,6 +45,7 @@
     <string name="type_3_label">Disconnecting</string>
     <string name="type_4_label">Disconnected</string>
     <string name="type_5_label">Unknown</string>
+    
     <string name="action_settings">Settings</string>
     <string name="settings_alert">Alert Settings</string>
     <string name="settings_vibrator">Vibrator</string>

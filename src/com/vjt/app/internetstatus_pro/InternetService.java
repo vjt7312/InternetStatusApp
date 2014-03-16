@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,7 +16,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.TrafficStats;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
@@ -184,6 +187,53 @@ public class InternetService extends Service {
 		nm.cancelAll();
 	}
 
+	private int getVibrator() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_vibrator", 1));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.vibration_0_default));
+		case 1:
+			return Integer.parseInt(getString(R.string.vibration_1_default));
+		case 2:
+			return Integer.parseInt(getString(R.string.vibration_2_default));
+		case 3:
+			return Integer.parseInt(getString(R.string.vibration_3_default));
+		case 4:
+			return Integer.parseInt(getString(R.string.vibration_4_default));
+		}
+		return 0;
+	}
+
+	private int getLight() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_light", 1));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.light_0_default));
+		case 1:
+			return Integer.parseInt(getString(R.string.light_1_default));
+		case 2:
+			return Integer.parseInt(getString(R.string.light_2_default));
+		case 3:
+			return Integer.parseInt(getString(R.string.light_3_default));
+		case 4:
+			return Integer.parseInt(getString(R.string.light_4_default));
+		}
+		return 0;
+	}
+
+	private int getSound() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		return settings.getInt("settings_sound", 0);
+	}
+
 	private void setupAlert(boolean isUp, int limit) {
 		String ns = Context.NOTIFICATION_SERVICE;
 		int icon;
@@ -208,13 +258,24 @@ public class InternetService extends Service {
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
+			int vibrator = getVibrator();
+			if (vibrator > 0) {
+				((Builder) mBuilder).setVibrate(new long[] { 0, vibrator });
+			}
+			int light = getLight();
+			if (light > 0) {
+				((Builder) mBuilder).setLights(Color.RED, light, light).build();
+			}
+			if (getSound() > 0) {
+				Uri uri = RingtoneManager
+						.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				((Builder) mBuilder).setSound(uri).build();
+			}
 			mNoti = ((Notification.Builder) mBuilder)
 					.setContentTitle(getString(R.string.stat_limit_alert))
 					.setContentIntent(pIntent).setContentText(status_label)
 					.setSmallIcon(icon).setAutoCancel(false)
-					.setPriority(Notification.PRIORITY_HIGH)
-					.setVibrate(new long[] { 0, 500 })
-					.setLights(Color.RED, 1000, 1000).build();
+					.setPriority(Notification.PRIORITY_HIGH).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = getString(R.string.stat_limit_alert);
@@ -224,8 +285,15 @@ public class InternetService extends Service {
 			mNoti.icon = icon;
 			mNoti.when = when;
 			mNoti.tickerText = text;
-			mNoti.defaults |= Notification.DEFAULT_SOUND;
-			mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			if (getVibrator() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_VIBRATE;
+			}
+			if (getLight() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			}
+			if (getSound() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_SOUND;
+			}
 			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
 		}
 		mNoti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;

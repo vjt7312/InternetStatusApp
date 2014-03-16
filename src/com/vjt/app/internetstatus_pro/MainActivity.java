@@ -515,22 +515,22 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		}
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(R.menu.main, menu);
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-//		switch (item.getItemId()) {
-//		case R.id.action_settings:
-//			Intent launchNewIntent = new Intent(MainActivity.this,
-//					Settings.class);
-//			startActivityForResult(launchNewIntent, 0);
-//			break;
-//		}
-//		return super.onMenuItemSelected(featureId, item);
-//	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent launchNewIntent = new Intent(MainActivity.this,
+					Settings.class);
+			startActivityForResult(launchNewIntent, 0);
+			break;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
 
 }

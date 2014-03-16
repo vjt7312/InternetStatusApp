@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -187,7 +188,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 												.edit();
 										editor.putInt("limit_up", limit_up);
 										editor.putBoolean("fire_up", false);
-					editor.commit();
+										editor.commit();
 
 										mTXLimit.setText(limit_up == 0 ? "----"
 												: String.valueOf(limit_up));
@@ -246,7 +247,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 												: String.valueOf(limit_down));
 										steStatLayoutBorder(false, true);
 
-				}
+									}
 								})
 						.setNegativeButton(
 								getString(R.string.stat_cancel_label),
@@ -495,12 +496,20 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 						mTXLayout
 								.setBackgroundResource(R.layout.alert_background);
 					} else {
-						mTXLayout.setBackground(null);
+						if (Build.VERSION.SDK_INT >= 16) {
+							mTXLayout.setBackground(null);
+						} else {
+							mTXLayout.setBackgroundDrawable(null);
+						}
 						mTXLayout.setPadding(0, 0, 0, 0);
 					}
 				}
 			} catch (Exception e) {
-				mTXLayout.setBackground(null);
+				if (Build.VERSION.SDK_INT >= 16) {
+					mTXLayout.setBackground(null);
+				} else {
+					mTXLayout.setBackgroundDrawable(null);
+				}
 				mTXLayout.setPadding(0, 0, 0, 0);
 			}
 		}
@@ -514,19 +523,27 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 						mRXLayout
 								.setBackgroundResource(R.layout.alert_background);
 					} else {
-						mRXLayout.setBackground(null);
+						if (Build.VERSION.SDK_INT >= 16) {
+							mRXLayout.setBackground(null);
+						} else {
+							mRXLayout.setBackgroundDrawable(null);
+						}
 						mRXLayout.setPadding(0, 0, 0, 0);
 					}
 				}
 			} catch (Exception e) {
-				mRXLayout.setBackground(null);
+				if (Build.VERSION.SDK_INT >= 16) {
+					mRXLayout.setBackground(null);
+				} else {
+					mRXLayout.setBackgroundDrawable(null);
+				}
 				mRXLayout.setPadding(0, 0, 0, 0);
 			}
 		}
 
 	}
 
-        @Override
+	@Override
 	public void onDestroy() {
 		adView.destroy();
 		super.onDestroy();

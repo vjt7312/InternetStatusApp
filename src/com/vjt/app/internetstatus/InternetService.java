@@ -15,7 +15,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.TrafficStats;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
@@ -66,9 +68,9 @@ public class InternetService extends Service {
 	private static final int NET_STAT_INTERVAL = 1000;
 	private static final int NET_STAT_HIGH_THRESHOLD = 1024 * 512;
 
-	private final int NOTIFICATIONID = 7696;
-	private final int ALERTUPID = 7697;
-	private final int ALERTDOWNID = 7698;
+	private static final int NOTIFICATIONID = 7696;
+	public static final int ALERTUPID = 7697;
+	public static final int ALERTDOWNID = 7698;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
@@ -79,7 +81,6 @@ public class InternetService extends Service {
 	private static int mInterval;
 	private static String mURL;
 	private static boolean mOnOff;
-	private Object mBuilder;
 	private Notification mNoti = new Notification();
 
 	// pro
@@ -151,8 +152,10 @@ public class InternetService extends Service {
 		PendingIntent pIntent = PendingIntent
 				.getActivity(context, 0, intent, 0);
 
-		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
-			mNoti = ((Notification.Builder) mBuilder)
+		if (Build.VERSION.SDK_INT >= 16) {
+			Notification.Builder builder = new Notification.Builder(this);
+
+			mNoti = builder
 					.setContentTitle(
 							context.getString(R.string.status_title_label))
 					.setContentIntent(pIntent)
@@ -184,6 +187,53 @@ public class InternetService extends Service {
 		nm.cancelAll();
 	}
 
+	private int getVibrator() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_vibrator", 1));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.vibration_0_default));
+		case 1:
+			return Integer.parseInt(getString(R.string.vibration_1_default));
+		case 2:
+			return Integer.parseInt(getString(R.string.vibration_2_default));
+		case 3:
+			return Integer.parseInt(getString(R.string.vibration_3_default));
+		case 4:
+			return Integer.parseInt(getString(R.string.vibration_4_default));
+		}
+		return 0;
+	}
+
+	private int getLight() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_light", 1));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.light_0_default));
+		case 1:
+			return Integer.parseInt(getString(R.string.light_1_default));
+		case 2:
+			return Integer.parseInt(getString(R.string.light_2_default));
+		case 3:
+			return Integer.parseInt(getString(R.string.light_3_default));
+		case 4:
+			return Integer.parseInt(getString(R.string.light_4_default));
+		}
+		return 0;
+	}
+
+	private int getSound() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		return settings.getInt("settings_sound", 0);
+	}
+
 	private void setupAlert(boolean isUp, int limit) {
 		String ns = Context.NOTIFICATION_SERVICE;
 		int icon;
@@ -207,25 +257,45 @@ public class InternetService extends Service {
 		Intent intent = new Intent(this, MainActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-		if (Build.VERSION.SDK_INT >= 16 && mBuilder != null) {
-			mNoti = ((Notification.Builder) mBuilder)
+		if (Build.VERSION.SDK_INT >= 16) {
+			Notification.Builder builder = new Notification.Builder(this);
+
+			int vibrator = getVibrator();
+			if (vibrator > 0) {
+				builder.setVibrate(new long[] { 0, vibrator });
+			}
+			int light = getLight();
+			if (light > 0) {
+				builder.setLights(Color.RED, light, light).build();
+			}
+			if (getSound() > 0) {
+				Uri uri = RingtoneManager
+						.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				builder.setSound(uri).build();
+			}
+			mNoti = builder
 					.setContentTitle(getString(R.string.stat_limit_alert))
 					.setContentIntent(pIntent).setContentText(status_label)
 					.setSmallIcon(icon).setAutoCancel(false)
-					.setPriority(Notification.PRIORITY_HIGH)
-					.setVibrate(new long[] { 0, 500 })
-					.setLights(Color.RED, 1000, 1000).build();
+					.setPriority(Notification.PRIORITY_HIGH).build();
 		} else {
 			long when = System.currentTimeMillis();
 			CharSequence contentTitle = getString(R.string.stat_limit_alert);
-			CharSequence text = getString(R.string.app_name);
+			CharSequence text = status_label;
 			CharSequence contentText = status_label;
 
 			mNoti.icon = icon;
 			mNoti.when = when;
 			mNoti.tickerText = text;
+			if (getVibrator() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_VIBRATE;
+			}
+			if (getLight() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			}
+			if (getSound() > 0) {
 			mNoti.defaults |= Notification.DEFAULT_SOUND;
-			mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			}
 			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
 		}
 		mNoti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
@@ -308,8 +378,6 @@ public class InternetService extends Service {
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		registerReceiver(receiver, filter);
-		if (Build.VERSION.SDK_INT >= 16)
-			mBuilder = new Notification.Builder(this);
 
 		// pro
 		mNetworkConnectivityListener = new NetworkConnectivityListener();

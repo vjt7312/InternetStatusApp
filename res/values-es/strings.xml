@@ -26,7 +26,7 @@
     <string name="stat_setup_title_label">Establecer alerta limitación(MB):</string>
     <string name="stat_limit_label">Limitación de alerta(MB):</string>
     <string name="stat_limit_up_exceed_label">Subir limitación %1$s MB excedido</string>
-    <string name="stat_limit_down_exceed_label">Descarga limitación% %1$s MB excedido</string>
+    <string name="stat_limit_down_exceed_label">Descarga limitación %1$s MB excedido</string>
     <string name="stat_ok_label">bueno</string>
     <string name="stat_cancel_label">cancelar</string>
 

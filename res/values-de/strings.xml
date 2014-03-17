@@ -20,8 +20,8 @@
     <string name="stat_unsupport">Gerät nicht unterstützt</string>
     <string name="stat_tx_total_label">TX Gesamt(MB):</string>
     <string name="stat_rx_total_label">RX Gesamt(MB):</string>
-    <string name="stat_reset_label">rücksetzen</string>
-    <string name="stat_setup_label">Setup-</string>
+    <string name="stat_reset_label">rück.</string>
+    <string name="stat_setup_label">Setup</string>
     <string name="stat_limit_alert">Begrenzung Benachrichtigung</string>
     <string name="stat_setup_title_label">Stellen Begrenzung alert(MB):</string>
     <string name="stat_limit_label">Begrenzung alert(MB):</string>

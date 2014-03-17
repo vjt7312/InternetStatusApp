@@ -18,15 +18,15 @@
     <string name="stat_tx_label">TX octets/sec:</string>
     <string name="stat_rx_label">RX octets/sec:</string>
     <string name="stat_unsupport">pas prise en charge</string>
-    <string name="stat_tx_total_label">TX au total(Mo):</string>
-    <string name="stat_rx_total_label">RX au total(Mo):</string>
-    <string name="stat_reset_label">remettre</string>
-    <string name="stat_setup_label">installation</string>
+    <string name="stat_tx_total_label">TX au total(MB):</string>
+    <string name="stat_rx_total_label">RX au total(MB):</string>
+    <string name="stat_reset_label">reme.</string>
+    <string name="stat_setup_label">inst.</string>
     <string name="stat_limit_alert">limitation alerte</string>
-    <string name="stat_setup_title_label">Alerte de prescription fixé(Mo):</string>
-    <string name="stat_limit_label">Limitation alerte(Mo):</string>
-    <string name="stat_limit_up_exceed_label">Téléchargez limitation de %1$s Mo dépassé</string>
-    <string name="stat_limit_down_exceed_label">Télécharger limitation %1$s Mo dépassé</string>
+    <string name="stat_setup_title_label">Alerte de prescription fixé(MB):</string>
+    <string name="stat_limit_label">Limitation alerte(MB):</string>
+    <string name="stat_limit_up_exceed_label">Téléchargez limitation %1$s MB dépassé</string>
+    <string name="stat_limit_down_exceed_label">Télécharger limitation %1$s MB dépassé</string>
     <string name="stat_ok_label">bien</string>
     <string name="stat_cancel_label">annuler</string>
 

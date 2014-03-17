@@ -20,8 +20,8 @@
     <string name="stat_unsupport">dispositivo no admitido</string>
     <string name="stat_tx_total_label">TX en total(MB):</string>
     <string name="stat_rx_total_label">RX en total(MB):</string>
-    <string name="stat_reset_label">reajustar</string>
-    <string name="stat_setup_label">disposición</string>
+    <string name="stat_reset_label">reaj.</string>
+    <string name="stat_setup_label">disp.</string>
     <string name="stat_limit_alert">alerta Limitación</string>
     <string name="stat_setup_title_label">Establecer alerta limitación(MB):</string>
     <string name="stat_limit_label">Limitación de alerta(MB):</string>

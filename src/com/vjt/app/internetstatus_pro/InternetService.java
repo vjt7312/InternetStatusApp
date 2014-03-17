@@ -724,8 +724,8 @@ public class InternetService extends Service {
 		mRxTotal = TrafficStats.getTotalRxBytes();
 		mTxMBTotal = TrafficStats.getMobileTxBytes();
 		mRxMBTotal = TrafficStats.getMobileRxBytes();
-		mTxWFTotal = mTxTotal - mTxMBTotal;
-		mRxWFTotal = mRxTotal - mRxMBTotal;
+		mTxWFTotal = (mTxTotal - mTxMBTotal < 0) ? 0 : mTxTotal - mTxMBTotal;
+		mRxWFTotal = (mRxTotal - mRxMBTotal < 0) ? 0 : mRxTotal - mRxMBTotal;
 
 		LogUtil.i(TAG, "TX = " + mTxTotal);
 		LogUtil.i(TAG, "RX = " + mRxTotal);
@@ -794,10 +794,15 @@ public class InternetService extends Service {
 		getTxRX();
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
 			if (countOldData && (rxTotal > 0 || txTotal > 0)) {
-				mRXTotal += mRxMBTotal - rxMBTotal;
-				mTXTotal += mTxMBTotal - txMBTotal;
-				mRXWFTotal += mRxWFTotal - rxWFTotal;
-				mTXWFTotal += mTxWFTotal - txWFTotal;
+				long delta = 0;
+				delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal - rxMBTotal;
+				mRXTotal += delta;
+				delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal - txMBTotal;
+				mTXTotal += delta;
+				delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal - rxWFTotal;
+				mRXWFTotal += delta;
+				delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal - txWFTotal;
+				mTXWFTotal += delta;
 
 				limitCheck();
 				Intent i = new Intent(ACTION_STAT);
@@ -835,10 +840,16 @@ public class InternetService extends Service {
 		if (!isFirst) {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
-			mRXTotal += mRxMBTotal - rxMBTotal;
-			mTXTotal += mTxMBTotal - txMBTotal;
-			mRXWFTotal += mRxWFTotal - rxWFTotal;
-			mTXWFTotal += mTxWFTotal - txWFTotal;
+			long delta = 0;
+			delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal - rxMBTotal;
+			mRXTotal += delta;
+			delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal - txMBTotal;
+			mTXTotal += delta;
+			delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal - rxWFTotal;
+			mRXWFTotal += delta;
+			delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal - txWFTotal;
+			mTXWFTotal += delta;
+			
 			limitCheck();
 			Intent i = new Intent(ACTION_STAT);
 			i.putExtra("rx", mRxSec);

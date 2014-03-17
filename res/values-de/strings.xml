@@ -26,7 +26,7 @@
     <string name="stat_setup_title_label">Stellen Begrenzung alert(MB):</string>
     <string name="stat_limit_label">Begrenzung alert(MB):</string>
     <string name="stat_limit_up_exceed_label">Einschränkung Upload %1$s MB überschritten</string>
-    <string name="stat_limit_down_exceed_label">Laden Beschränkung% %1$s MB überschritten</string>
+    <string name="stat_limit_down_exceed_label">Laden Beschränkung %1$s MB überschritten</string>
     <string name="stat_ok_label">Ok</string>
     <string name="stat_cancel_label">stornieren</string>
 

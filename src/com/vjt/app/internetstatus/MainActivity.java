@@ -60,6 +60,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 	RelativeLayout mTXLayout;
 	RelativeLayout mRXLayout;
 
+	TextView mTXWFTotal;
+	TextView mRXWFTotal;
+	TextView mTXWFLimit;
+	TextView mRXWFLimit;
+	Button mTXWFReset;
+	Button mRXWFReset;
+	Button mTXWFSetup;
+	Button mRXWFSetup;
+	RelativeLayout mTXWFLayout;
+	RelativeLayout mRXWFLayout;
+
 	boolean mOnOff;
 
 	private AdView adView;
@@ -113,6 +124,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mRXSetup = (Button) findViewById(R.id.stat_set_rx_btn);
 		mTXLayout = (RelativeLayout) findViewById(R.id.tx_layout);
 		mRXLayout = (RelativeLayout) findViewById(R.id.rx_layout);
+
+		mTXWFTotal = (TextView) findViewById(R.id.stat_txwf_total);
+		mRXWFTotal = (TextView) findViewById(R.id.stat_rxwf_total);
+		mTXWFLimit = (TextView) findViewById(R.id.stat_txwf_limit);
+		mRXWFLimit = (TextView) findViewById(R.id.stat_rxwf_limit);
+		mTXWFReset = (Button) findViewById(R.id.stat_txwf_btn);
+		mRXWFReset = (Button) findViewById(R.id.stat_rxwf_btn);
+		mTXWFSetup = (Button) findViewById(R.id.stat_set_txwf_btn);
+		mRXWFSetup = (Button) findViewById(R.id.stat_set_rxwf_btn);
+		mTXWFLayout = (RelativeLayout) findViewById(R.id.txwf_layout);
+		mRXWFLayout = (RelativeLayout) findViewById(R.id.rxwf_layout);
 
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -266,26 +288,190 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			}
 		});
 
+		mTXWFReset.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if (mOnOff) {
+					editor.putBoolean("fire_up_wf", false);
+					editor.commit();
+
+					Intent serverService = new Intent(MainActivity.this,
+							InternetService.class);
+					serverService.setAction(InternetService.ACTION_RESET_TXWF);
+					startService(serverService);
+				} else {
+					mTXWFTotal.setText("0");
+					editor.putLong("txwf_total", 0);
+					editor.putBoolean("fire_up_wf", false);
+					editor.commit();
+					steStatLayoutBorderWF(true, false);
+				}
+			}
+		});
+
+		mRXWFReset.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if (mOnOff) {
+					editor.putBoolean("fire_down_wf", false);
+					editor.commit();
+
+					Intent serverService = new Intent(MainActivity.this,
+							InternetService.class);
+					serverService.setAction(InternetService.ACTION_RESET_RXWF);
+					startService(serverService);
+				} else {
+					mRXWFTotal.setText("0");
+					editor.putLong("rxwf_total", 0);
+					editor.putBoolean("fire_down_wf", false);
+					editor.commit();
+					steStatLayoutBorderWF(false, true);
+				}
+			}
+		});
+
+		mTXWFSetup.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				LayoutInflater li = LayoutInflater.from(MainActivity.this);
+				View promptsView = li.inflate(R.layout.limit, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						MainActivity.this);
+				alertDialogBuilder.setView(promptsView);
+				final EditText userInput = (EditText) promptsView
+						.findViewById(R.id.input_limit);
+				alertDialogBuilder
+						.setCancelable(false)
+						.setPositiveButton(getString(R.string.stat_ok_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										int limit_up;
+										try {
+											limit_up = Integer
+													.parseInt(userInput
+															.getText()
+															.toString()
+															.replaceFirst(
+																	"^0+(?!$)",
+																	""));
+										} catch (Exception e) {
+											limit_up = 0;
+										}
+										SharedPreferences settings = PreferenceManager
+												.getDefaultSharedPreferences(MainActivity.this);
+										final SharedPreferences.Editor editor = settings
+												.edit();
+										editor.putInt("limit_up_wf", limit_up);
+										editor.putBoolean("fire_up_wf", false);
+										editor.commit();
+
+										mTXWFLimit.setText(limit_up == 0 ? "----"
+												: String.valueOf(limit_up));
+										steStatLayoutBorder(true, false);
+									}
+								})
+						.setNegativeButton(
+								getString(R.string.stat_cancel_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
+		});
+
+		mRXWFSetup.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				LayoutInflater li = LayoutInflater.from(MainActivity.this);
+				View promptsView = li.inflate(R.layout.limit, null);
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						MainActivity.this);
+				alertDialogBuilder.setView(promptsView);
+				final EditText userInput = (EditText) promptsView
+						.findViewById(R.id.input_limit);
+				alertDialogBuilder
+						.setCancelable(false)
+						.setPositiveButton(getString(R.string.stat_ok_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										int limit_down;
+										try {
+											limit_down = Integer
+													.parseInt(userInput
+															.getText()
+															.toString()
+															.replaceFirst(
+																	"^0+(?!$)",
+																	""));
+										} catch (Exception e) {
+											limit_down = 0;
+										}
+										SharedPreferences settings = PreferenceManager
+												.getDefaultSharedPreferences(MainActivity.this);
+										final SharedPreferences.Editor editor = settings
+												.edit();
+										editor.putInt("limit_down_wf",
+												limit_down);
+										editor.putBoolean("fire_down_wf", false);
+										editor.commit();
+										mRXWFLimit
+												.setText(limit_down == 0 ? "----"
+														: String.valueOf(limit_down));
+										steStatLayoutBorder(false, true);
+
+									}
+								})
+						.setNegativeButton(
+								getString(R.string.stat_cancel_label),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
+		});
+
 		try {
 			mInterval.setProgress(settings.getInt("interval", 2));
 		} catch (Exception e) {
 			mInterval.setProgress(2);
 		}
+
 		float tx_total = settings.getLong("tx_total", 0) / 1000000.0f;
 		tx_total = (float) Math.round(tx_total * 100) / 100;
 		float rx_total = settings.getLong("rx_total", 0) / 1000000.0f;
 		rx_total = (float) Math.round(rx_total * 100) / 100;
-
 		mTXTotal.setText(Float.toString(tx_total));
 		mRXTotal.setText(Float.toString(rx_total));
 
+		float txwf_total = settings.getLong("txwf_total", 0) / 1000000.0f;
+		tx_total = (float) Math.round(tx_total * 100) / 100;
+		float rxwf_total = settings.getLong("rxwf_total", 0) / 1000000.0f;
+		rx_total = (float) Math.round(rx_total * 100) / 100;
+		mTXWFTotal.setText(Float.toString(txwf_total));
+		mRXWFTotal.setText(Float.toString(rxwf_total));
+
 		int limit_up = settings.getInt("limit_up", 0);
 		int limit_down = settings.getInt("limit_down", 0);
-
 		mTXLimit.setText(limit_up == 0 ? "----" : Integer.toString(limit_up));
 		mRXLimit.setText(limit_down == 0 ? "----" : Integer
 				.toString(limit_down));
 		steStatLayoutBorder(true, true);
+
+		int limit_up_wf = settings.getInt("limit_up_wf", 0);
+		int limit_down_wf = settings.getInt("limit_down_wf", 0);
+		mTXWFLimit.setText(limit_up_wf == 0 ? "----" : Integer
+				.toString(limit_up_wf));
+		mRXWFLimit.setText(limit_down_wf == 0 ? "----" : Integer
+				.toString(limit_down_wf));
+		steStatLayoutBorderWF(true, true);
 
 		mOnOff = settings.getString("onoff", getString(R.string.onoff_default))
 				.equals("on");
@@ -305,6 +491,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(InternetService.ALERTUPID);
 		nm.cancel(InternetService.ALERTDOWNID);
+		nm.cancel(InternetService.ALERTUPWFID);
+		nm.cancel(InternetService.ALERTDOWNWFID);
 	}
 
 	private void startServer() {
@@ -399,11 +587,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		mRXTotal.setText("0");
 		steStatLayoutBorder(true, true);
 
+		mTXWFTotal.setText("0");
+		mRXWFTotal.setText("0");
+		steStatLayoutBorderWF(true, true);
+
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		final SharedPreferences.Editor editor = settings.edit();
 		editor.putLong("tx_total", 0);
 		editor.putLong("rx_total", 0);
+		editor.putLong("txwf_total", 0);
+		editor.putLong("rxwf_total", 0);
 		editor.commit();
 	}
 
@@ -453,10 +647,17 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 					tx_total = (float) Math.round(tx_total * 100) / 100;
 					float rx_total = intent.getLongExtra("rx_total", 0) / 1000000.0f;
 					rx_total = (float) Math.round(rx_total * 100) / 100;
-
 					mTXTotal.setText(Float.toString(tx_total));
 					mRXTotal.setText(Float.toString(rx_total));
 					steStatLayoutBorder(true, true);
+
+					float txwf_total = intent.getLongExtra("txwf_total", 0) / 1000000.0f;
+					txwf_total = (float) Math.round(txwf_total * 100) / 100;
+					float rxwf_total = intent.getLongExtra("rxwf_total", 0) / 1000000.0f;
+					rxwf_total = (float) Math.round(rxwf_total * 100) / 100;
+					mTXWFTotal.setText(Float.toString(txwf_total));
+					mRXWFTotal.setText(Float.toString(rxwf_total));
+					steStatLayoutBorderWF(true, true);
 				}
 			}
 		}
@@ -544,6 +745,63 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 					mRXLayout.setBackgroundDrawable(null);
 				}
 				mRXLayout.setPadding(0, 0, 0, 0);
+			}
+		}
+	}
+
+	private void steStatLayoutBorderWF(boolean tx, boolean rx) {
+		if (tx) {
+			try {
+				int txLimit = Integer.parseInt(mTXWFLimit.getText().toString());
+				if (txLimit > 0) {
+					float txTotal = Float.parseFloat(mTXWFTotal.getText()
+							.toString());
+					if (txTotal >= (float) txLimit) {
+						mTXWFLayout
+								.setBackgroundResource(R.layout.alert_background);
+					} else {
+						if (Build.VERSION.SDK_INT >= 16) {
+							mTXWFLayout.setBackground(null);
+						} else {
+							mTXWFLayout.setBackgroundDrawable(null);
+						}
+						mTXWFLayout.setPadding(0, 0, 0, 0);
+					}
+				}
+			} catch (Exception e) {
+				if (Build.VERSION.SDK_INT >= 16) {
+					mTXWFLayout.setBackground(null);
+				} else {
+					mTXWFLayout.setBackgroundDrawable(null);
+				}
+				mTXWFLayout.setPadding(0, 0, 0, 0);
+			}
+		}
+		if (rx) {
+			try {
+				int rxLimit = Integer.parseInt(mRXWFLimit.getText().toString());
+				if (rxLimit > 0) {
+					float txTotal = Float.parseFloat(mRXWFTotal.getText()
+							.toString());
+					if (txTotal >= (float) rxLimit) {
+						mRXWFLayout
+								.setBackgroundResource(R.layout.alert_background);
+					} else {
+						if (Build.VERSION.SDK_INT >= 16) {
+							mRXWFLayout.setBackground(null);
+						} else {
+							mRXWFLayout.setBackgroundDrawable(null);
+						}
+						mRXWFLayout.setPadding(0, 0, 0, 0);
+					}
+				}
+			} catch (Exception e) {
+				if (Build.VERSION.SDK_INT >= 16) {
+					mRXWFLayout.setBackground(null);
+				} else {
+					mRXWFLayout.setBackgroundDrawable(null);
+				}
+				mRXWFLayout.setPadding(0, 0, 0, 0);
 			}
 		}
 	}

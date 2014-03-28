@@ -25,8 +25,10 @@
     <string name="stat_limit_alert">limitation alerte</string>
     <string name="stat_setup_title_label">Alerte de prescription fixé(MB):</string>
     <string name="stat_limit_label">Limitation alerte(MB):</string>
-    <string name="stat_limit_up_exceed_label">Téléchargez limitation %1$s MB dépassé</string>
-    <string name="stat_limit_down_exceed_label">Télécharger limitation %1$s MB dépassé</string>
+    <string name="stat_limit_up_exceed_label">Limitation de téléchargement mobile %1$s MB dépassé</string>
+    <string name="stat_limit_down_exceed_label">Mobile télécharger limitation %1$s MB dépassé</string>
+    <string name="stat_wf_limit_up_exceed_label">Wi-Fi téléchargement limitation %1$s MB dépassé</string>
+    <string name="stat_wf_limit_down_exceed_label">Wi-Fi téléchargement limitation %1$s MB dépassé</string>
     <string name="stat_ok_label">bien</string>
     <string name="stat_cancel_label">annuler</string>
 

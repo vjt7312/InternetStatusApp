@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -44,6 +45,8 @@ public class InternetService extends Service {
 	public static final String ACTION_STAT = "com.vjt.app.internetstatus.STAT";
 	public static final String ACTION_RESET_TX = "com.vjt.app.internetstatus.RESET_TX";
 	public static final String ACTION_RESET_RX = "com.vjt.app.internetstatus.RESET_RX";
+	public static final String ACTION_RESET_TXWF = "com.vjt.app.internetstatus.RESET_TXWF";
+	public static final String ACTION_RESET_RXWF = "com.vjt.app.internetstatus.RESET_RXWF";
 
 	public static final String ACTION_SCREEN_ON = "screen_on";
 	public static final String ACTION_SCREEN_OFF = "screen_off";
@@ -71,6 +74,8 @@ public class InternetService extends Service {
 	private static final int NOTIFICATIONID = 7696;
 	public static final int ALERTUPID = 7697;
 	public static final int ALERTDOWNID = 7698;
+	public static final int ALERTUPWFID = 7699;
+	public static final int ALERTDOWNWFID = 7700;
 
 	private static int serviceStatus = STATUS_NONE;
 	private static int serviceState = STATE_NONE;
@@ -95,6 +100,13 @@ public class InternetService extends Service {
 	private static boolean mSupport = true;
 	private static long mTXTotal;
 	private static long mRXTotal;
+
+	private static long mTxMBTotal;
+	private static long mRxMBTotal;
+	private static long mTxWFTotal;
+	private static long mRxWFTotal;
+	private static long mTXWFTotal;
+	private static long mRXWFTotal;
 
 	private final IBinder binder = new InternetServiceBinder();
 
@@ -294,7 +306,7 @@ public class InternetService extends Service {
 				mNoti.defaults |= Notification.DEFAULT_LIGHTS;
 			}
 			if (getSound() > 0) {
-			mNoti.defaults |= Notification.DEFAULT_SOUND;
+				mNoti.defaults |= Notification.DEFAULT_SOUND;
 			}
 			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
 		}
@@ -304,6 +316,79 @@ public class InternetService extends Service {
 			nm.notify(ALERTUPID, mNoti);
 		} else {
 			nm.notify(ALERTDOWNID, mNoti);
+		}
+	}
+
+	private void setupAlertWF(boolean isUp, int limit) {
+		String ns = Context.NOTIFICATION_SERVICE;
+		int icon;
+		String status_label;
+
+		NotificationManager nm = (NotificationManager) getSystemService(ns);
+		if (isUp) {
+			icon = R.drawable.limit_up;
+			status_label = String.format(
+					getResources().getString(
+							R.string.stat_wf_limit_up_exceed_label),
+					Integer.toString(limit));
+		} else {
+			icon = R.drawable.limit_down;
+			status_label = String.format(
+					getResources().getString(
+							R.string.stat_wf_limit_down_exceed_label),
+					Integer.toString(limit));
+		}
+
+		Intent intent = new Intent(this, MainActivity.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+		if (Build.VERSION.SDK_INT >= 16) {
+			Notification.Builder builder = new Notification.Builder(this);
+
+			int vibrator = getVibrator();
+			if (vibrator > 0) {
+				builder.setVibrate(new long[] { 0, vibrator });
+			}
+			int light = getLight();
+			if (light > 0) {
+				builder.setLights(Color.RED, light, light).build();
+			}
+			if (getSound() > 0) {
+				Uri uri = RingtoneManager
+						.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				builder.setSound(uri).build();
+			}
+			mNoti = builder
+					.setContentTitle(getString(R.string.stat_limit_alert))
+					.setContentIntent(pIntent).setContentText(status_label)
+					.setSmallIcon(icon).setAutoCancel(false)
+					.setPriority(Notification.PRIORITY_HIGH).build();
+		} else {
+			long when = System.currentTimeMillis();
+			CharSequence contentTitle = getString(R.string.stat_limit_alert);
+			CharSequence text = status_label;
+			CharSequence contentText = status_label;
+
+			mNoti.icon = icon;
+			mNoti.when = when;
+			mNoti.tickerText = text;
+			if (getVibrator() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_VIBRATE;
+			}
+			if (getLight() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_LIGHTS;
+			}
+			if (getSound() > 0) {
+				mNoti.defaults |= Notification.DEFAULT_SOUND;
+			}
+			mNoti.setLatestEventInfo(this, contentTitle, contentText, pIntent);
+		}
+		mNoti.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+		mNoti.flags |= Notification.FLAG_AUTO_CANCEL;
+		if (isUp) {
+			nm.notify(ALERTUPWFID, mNoti);
+		} else {
+			nm.notify(ALERTDOWNWFID, mNoti);
 		}
 	}
 
@@ -438,9 +523,13 @@ public class InternetService extends Service {
 			mURL = settings.getString("url", getString(R.string.url_default));
 			mTXTotal = settings.getLong("tx_total", 0);
 			mRXTotal = settings.getLong("rx_total", 0);
+			mTXWFTotal = settings.getLong("txwf_total", 0);
+			mRXWFTotal = settings.getLong("rxwf_total", 0);
 			LogUtil.i(TAG, "onStartCommand");
 			LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
 			LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
+			LogUtil.i(TAG, "mRXWFTotal = " + mRXWFTotal);
+			LogUtil.i(TAG, "mTXWFTotal = " + mTXWFTotal);
 
 			isThisTimeBad = false;
 			doCheck();
@@ -460,6 +549,22 @@ public class InternetService extends Service {
 			}
 		} else if (intent.getAction().equals(ACTION_RESET_RX)) {
 			resetStatRx();
+			if (serviceStatus == STATUS_NONE) {
+				stopSelf(startId);
+				return START_NOT_STICKY;
+			} else {
+				return START_REDELIVER_INTENT;
+			}
+		} else if (intent.getAction().equals(ACTION_RESET_TXWF)) {
+			resetStatTxWF();
+			if (serviceStatus == STATUS_NONE) {
+				stopSelf(startId);
+				return START_NOT_STICKY;
+			} else {
+				return START_REDELIVER_INTENT;
+			}
+		} else if (intent.getAction().equals(ACTION_RESET_RXWF)) {
+			resetStatRxWF();
 			if (serviceStatus == STATUS_NONE) {
 				stopSelf(startId);
 				return START_NOT_STICKY;
@@ -513,28 +618,37 @@ public class InternetService extends Service {
 		}
 	}
 
-	private void resetStatTx() {
-		mTXTotal = 0;
+	private void sendStat() {
 		Intent i = new Intent(ACTION_STAT);
 		i.putExtra("rx", mRxSec);
 		i.putExtra("tx", mTxSec);
 		i.putExtra("rx_total", mRXTotal);
 		i.putExtra("tx_total", mTXTotal);
+		i.putExtra("rxwf_total", mRXWFTotal);
+		i.putExtra("txwf_total", mTXWFTotal);
 		i.putExtra("support", mSupport);
 		sendBroadcast(i);
 		saveData();
 	}
 
+	private void resetStatTx() {
+		mTXTotal = 0;
+		sendStat();
+	}
+
 	private void resetStatRx() {
 		mRXTotal = 0;
-		Intent i = new Intent(ACTION_STAT);
-		i.putExtra("rx", mRxSec);
-		i.putExtra("tx", mTxSec);
-		i.putExtra("rx_total", mRXTotal);
-		i.putExtra("tx_total", mTXTotal);
-		i.putExtra("support", mSupport);
-		sendBroadcast(i);
-		saveData();
+		sendStat();
+	}
+
+	private void resetStatTxWF() {
+		mTXWFTotal = 0;
+		sendStat();
+	}
+
+	private void resetStatRxWF() {
+		mRXWFTotal = 0;
+		sendStat();
 	}
 
 	private void resetStatus() {
@@ -546,7 +660,6 @@ public class InternetService extends Service {
 	}
 
 	private void doCheck() {
-
 		try {
 
 			new NetTask().execute(mURL);
@@ -568,6 +681,8 @@ public class InternetService extends Service {
 
 		editor.putLong("tx_total", mTXTotal);
 		editor.putLong("rx_total", mRXTotal);
+		editor.putLong("txwf_total", mTXWFTotal);
+		editor.putLong("rxwf_total", mRXWFTotal);
 		editor.commit();
 	}
 
@@ -605,19 +720,26 @@ public class InternetService extends Service {
 	}
 
 	// stat
-	private static void getTx() {
+	private static void getTxRX() {
 		mTxTotal = TrafficStats.getTotalTxBytes();
-		LogUtil.i(TAG, "TX = " + mTxTotal);
-	}
-
-	private static void getRx() {
 		mRxTotal = TrafficStats.getTotalRxBytes();
+		mTxMBTotal = TrafficStats.getMobileTxBytes();
+		mRxMBTotal = TrafficStats.getMobileRxBytes();
+		mTxWFTotal = (mTxTotal - mTxMBTotal < 0) ? 0 : mTxTotal - mTxMBTotal;
+		mRxWFTotal = (mRxTotal - mRxMBTotal < 0) ? 0 : mRxTotal - mRxMBTotal;
+
+		LogUtil.i(TAG, "TX = " + mTxTotal);
 		LogUtil.i(TAG, "RX = " + mRxTotal);
+		LogUtil.i(TAG, "TXMB = " + mTxMBTotal);
+		LogUtil.i(TAG, "RXMB = " + mRxMBTotal);
+		LogUtil.i(TAG, "TXWF = " + mTxWFTotal);
+		LogUtil.i(TAG, "RXWF = " + mRxWFTotal);
 	}
 
 	private void limitCheck() {
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
+
 		boolean fire_up = settings.getBoolean("fire_up", false);
 		int limit_up = settings.getInt("limit_up", 0);
 		if (!fire_up && limit_up > 0 && mTXTotal >= limit_up * 1000000) {
@@ -627,6 +749,7 @@ public class InternetService extends Service {
 			editor.putBoolean("fire_up", true);
 			editor.commit();
 		}
+
 		boolean fire_down = settings.getBoolean("fire_down", false);
 		int limit_down = settings.getInt("limit_down", 0);
 		if (!fire_down && limit_down > 0 && mRXTotal >= limit_down * 1000000) {
@@ -636,33 +759,72 @@ public class InternetService extends Service {
 			editor.putBoolean("fire_down", true);
 			editor.commit();
 		}
+
+		boolean fire_up_wf = settings.getBoolean("fire_up_wf", false);
+		int limit_up_wf = settings.getInt("limit_up_wf", 0);
+		if (!fire_up_wf && limit_up_wf > 0
+				&& mTXWFTotal >= limit_up_wf * 1000000) {
+			setupAlertWF(true, limit_up_wf);
+
+			final SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("fire_up_wf", true);
+			editor.commit();
+		}
+
+		boolean fire_down_wf = settings.getBoolean("fire_down_wf", false);
+		int limit_down_wf = settings.getInt("limit_down_wf", 0);
+		if (!fire_down_wf && limit_down_wf > 0
+				&& mRXWFTotal >= limit_down_wf * 1000000) {
+			setupAlertWF(false, limit_down);
+
+			final SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("fire_down_wf", true);
+			editor.commit();
+		}
 	}
 
 	private void doStat(boolean isFirst, boolean countOldData) {
 
 		long rxTotal = mRxTotal;
 		long txTotal = mTxTotal;
+		long rxMBTotal = mRxMBTotal;
+		long txMBTotal = mTxMBTotal;
+		long rxWFTotal = mRxWFTotal;
+		long txWFTotal = mTxWFTotal;
 
-		getTx();
-		getRx();
+		getTxRX();
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
 			if (countOldData && (rxTotal > 0 || txTotal > 0)) {
-				mRXTotal += mRxTotal - rxTotal;
-				mTXTotal += mTxTotal - txTotal;
-				limitCheck();
-				Intent i = new Intent(ACTION_STAT);
-				i.putExtra("rx", mRxSec);
-				i.putExtra("tx", mTxSec);
-				i.putExtra("rx_total", mRXTotal);
-				i.putExtra("tx_total", mTXTotal);
-				i.putExtra("support", mSupport);
-				LogUtil.i(TAG, "isFirst = " + isFirst);
-				LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
-				LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
-				LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
-				LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
-				sendBroadcast(i);
-				saveData();
+				long delta = 0;
+
+				if (mNetworkConnectivityListener != null) {
+					if (mNetworkConnectivityListener.getNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI) {
+						delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal
+								- rxWFTotal;
+						mRXWFTotal += delta;
+						delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal
+								- txWFTotal;
+						mTXWFTotal += delta;
+					} else {
+						delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal
+								- rxMBTotal;
+						mRXTotal += delta;
+						delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal
+								- txMBTotal;
+						mTXTotal += delta;
+					}
+					limitCheck();
+					Intent i = new Intent(ACTION_STAT);
+					i.putExtra("rx", mRxSec);
+					i.putExtra("tx", mTxSec);
+					i.putExtra("rx_total", mRXTotal);
+					i.putExtra("tx_total", mTXTotal);
+					i.putExtra("rxwf_total", mRXWFTotal);
+					i.putExtra("txwf_total", mTXWFTotal);
+					i.putExtra("support", mSupport);
+					sendBroadcast(i);
+					saveData();
+				}
 			}
 			if (mHandler.hasMessages(MSG_NET_STAT))
 				return;
@@ -681,21 +843,36 @@ public class InternetService extends Service {
 		if (!isFirst) {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
-			mRXTotal += mRxSec;
-			mTXTotal += mTxSec;
-			limitCheck();
-			Intent i = new Intent(ACTION_STAT);
-			i.putExtra("rx", mRxSec);
-			i.putExtra("tx", mTxSec);
-			i.putExtra("rx_total", mRXTotal);
-			i.putExtra("tx_total", mTXTotal);
-			i.putExtra("support", mSupport);
-			sendBroadcast(i);
-			saveData();
-			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
-			LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
-			LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
-			LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
+			long delta = 0;
+
+			if (mNetworkConnectivityListener != null) {
+				if (mNetworkConnectivityListener.getNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI) {
+					delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal
+							- rxWFTotal;
+					mRXWFTotal += delta;
+					delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal
+							- txWFTotal;
+					mTXWFTotal += delta;
+				} else {
+					delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal
+							- rxMBTotal;
+					mRXTotal += delta;
+					delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal
+							- txMBTotal;
+					mTXTotal += delta;
+				}
+				limitCheck();
+				Intent i = new Intent(ACTION_STAT);
+				i.putExtra("rx", mRxSec);
+				i.putExtra("tx", mTxSec);
+				i.putExtra("rx_total", mRXTotal);
+				i.putExtra("tx_total", mTXTotal);
+				i.putExtra("rxwf_total", mRXWFTotal);
+				i.putExtra("txwf_total", mTXWFTotal);
+				i.putExtra("support", mSupport);
+				sendBroadcast(i);
+				saveData();
+			}
 
 			int oldTrafficStatus = mTrafficStatus;
 

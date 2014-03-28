@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -795,33 +796,35 @@ public class InternetService extends Service {
 		if (isFirst && mRxTotal > 0 && mRxTotal > 0) {
 			if (countOldData && (rxTotal > 0 || txTotal > 0)) {
 				long delta = 0;
-				delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal - rxMBTotal;
-				mRXTotal += delta;
-				delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal - txMBTotal;
-				mTXTotal += delta;
-				delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal - rxWFTotal;
-				mRXWFTotal += delta;
-				delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal - txWFTotal;
-				mTXWFTotal += delta;
 
-				limitCheck();
-				Intent i = new Intent(ACTION_STAT);
-				i.putExtra("rx", mRxSec);
-				i.putExtra("tx", mTxSec);
-				i.putExtra("rx_total", mRXTotal);
-				i.putExtra("tx_total", mTXTotal);
-				i.putExtra("rxwf_total", mRXWFTotal);
-				i.putExtra("txwf_total", mTXWFTotal);
-				i.putExtra("support", mSupport);
-				LogUtil.i(TAG, "isFirst = " + isFirst);
-				LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
-				LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
-				LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
-				LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
-				LogUtil.i(TAG, "mRxWFTotal = " + mRxWFTotal);
-				LogUtil.i(TAG, "mTxWFTotal = " + mTxWFTotal);
-				sendBroadcast(i);
-				saveData();
+				if (mNetworkConnectivityListener != null) {
+					if (mNetworkConnectivityListener.getNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI) {
+						delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal
+								- rxWFTotal;
+						mRXWFTotal += delta;
+						delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal
+								- txWFTotal;
+						mTXWFTotal += delta;
+					} else {
+						delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal
+								- rxMBTotal;
+						mRXTotal += delta;
+						delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal
+								- txMBTotal;
+						mTXTotal += delta;
+					}
+					limitCheck();
+					Intent i = new Intent(ACTION_STAT);
+					i.putExtra("rx", mRxSec);
+					i.putExtra("tx", mTxSec);
+					i.putExtra("rx_total", mRXTotal);
+					i.putExtra("tx_total", mTXTotal);
+					i.putExtra("rxwf_total", mRXWFTotal);
+					i.putExtra("txwf_total", mTXWFTotal);
+					i.putExtra("support", mSupport);
+					sendBroadcast(i);
+					saveData();
+				}
 			}
 			if (mHandler.hasMessages(MSG_NET_STAT))
 				return;
@@ -841,32 +844,35 @@ public class InternetService extends Service {
 			mRxSec = mRxTotal - rxTotal;
 			mTxSec = mTxTotal - txTotal;
 			long delta = 0;
-			delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal - rxMBTotal;
-			mRXTotal += delta;
-			delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal - txMBTotal;
-			mTXTotal += delta;
-			delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal - rxWFTotal;
-			mRXWFTotal += delta;
-			delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal - txWFTotal;
-			mTXWFTotal += delta;
-			
-			limitCheck();
-			Intent i = new Intent(ACTION_STAT);
-			i.putExtra("rx", mRxSec);
-			i.putExtra("tx", mTxSec);
-			i.putExtra("rx_total", mRXTotal);
-			i.putExtra("tx_total", mTXTotal);
-			i.putExtra("rxwf_total", mRXWFTotal);
-			i.putExtra("txwf_total", mTXWFTotal);
-			i.putExtra("support", mSupport);
-			sendBroadcast(i);
-			saveData();
-			LogUtil.i(TAG, "RX Bytes/s = " + mRxSec);
-			LogUtil.i(TAG, "TX Bytes/s = " + mTxSec);
-			LogUtil.i(TAG, "mRXTotal = " + mRXTotal);
-			LogUtil.i(TAG, "mTXTotal = " + mTXTotal);
-			LogUtil.i(TAG, "mRxWFTotal = " + mRxWFTotal);
-			LogUtil.i(TAG, "mTxWFTotal = " + mTxWFTotal);
+
+			if (mNetworkConnectivityListener != null) {
+				if (mNetworkConnectivityListener.getNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI) {
+					delta = mRxWFTotal - rxWFTotal < 0 ? 0 : mRxWFTotal
+							- rxWFTotal;
+					mRXWFTotal += delta;
+					delta = mTxWFTotal - txWFTotal < 0 ? 0 : mTxWFTotal
+							- txWFTotal;
+					mTXWFTotal += delta;
+				} else {
+					delta = mRxMBTotal - rxMBTotal < 0 ? 0 : mRxMBTotal
+							- rxMBTotal;
+					mRXTotal += delta;
+					delta = mTxMBTotal - txMBTotal < 0 ? 0 : mTxMBTotal
+							- txMBTotal;
+					mTXTotal += delta;
+				}
+				limitCheck();
+				Intent i = new Intent(ACTION_STAT);
+				i.putExtra("rx", mRxSec);
+				i.putExtra("tx", mTxSec);
+				i.putExtra("rx_total", mRXTotal);
+				i.putExtra("tx_total", mTXTotal);
+				i.putExtra("rxwf_total", mRXWFTotal);
+				i.putExtra("txwf_total", mTXWFTotal);
+				i.putExtra("support", mSupport);
+				sendBroadcast(i);
+				saveData();
+			}
 
 			int oldTrafficStatus = mTrafficStatus;
 

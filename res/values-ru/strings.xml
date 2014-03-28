@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Интернет Status Monitor PRO</string>
+    <string name="url_label">URL Запрос</string>
+    <string name="interval_label">Проверьте Frquency</string>
+    <string name="interval_0_label">низкий</string>
+    <string name="interval_1_label">среда</string>
+    <string name="interval_2_label">высокий</string>
+    <string name="interval_validation_error">Интервал должен быть в диапазоне от 2 до 65535.</string>
+    <string name="url_validation_error">Неправильный URL.</string>
+    <string name="status_title_label">статус Интернет</string>
+    <string name="status_online_label">онлайн</string>
+    <string name="status_offline_label">в оффлайне</string>
+    <string name="status_bad_label">плохой</string>
+
+    <!-- stat -->
+    <string name="stat_tx_label">Техас байт/сек:</string>
+    <string name="stat_rx_label">RX байт/сек:</string>
+    <string name="stat_unsupport">Устройство не поддерживается</string>
+    <string name="stat_tx_total_label">Общая Техас(МБ):</string>
+    <string name="stat_rx_total_label">Общая RX(МБ):</string>
+    <string name="stat_reset_label">сброс</string>
+    <string name="stat_setup_label">уста.</string>
+    <string name="stat_limit_alert">Ограничение оповещения</string>
+    <string name="stat_setup_title_label">Установить извещение ограничение(МБ):</string>
+    <string name="stat_limit_label">Оповещения(МБ):</string>
+    <string name="stat_limit_up_exceed_label">Мобильная загрузки ограничение %1$s МБ превысил</string>
+    <string name="stat_limit_down_exceed_label">Мобильные загрузить ограничение %1$s МБ превысил</string>
+    <string name="stat_wf_limit_up_exceed_label">Wi-Fi загружать ограничение %1$s МБ превысил</string>
+    <string name="stat_wf_limit_down_exceed_label">Wi-Fi скачать ограничение %1$s МБ превысил</string>
+    <string name="stat_ok_label">хорошо</string>
+    <string name="stat_cancel_label">отменить</string>
+
+    <!-- pro -->
+    <string name="ntw_type_label">Тип сети:</string>
+    <string name="ntw_state_label">Состояние сети:</string>
+    <string name="ntw_roam_label">Роуминг:</string>
+    <string name="ntw_none_label">Ни один</string>
+    <string name="wifi_label">Wi-Fi</string>
+    <string name="mobile_label">Мобильная сеть</string>
+    <string name="true_label">да</string>
+    <string name="false_label">нет</string>
+    <string name="type_0_label">соединительный</string>
+    <string name="type_1_label">подключенный</string>
+    <string name="type_2_label">подвесной</string>
+    <string name="type_3_label">Отключение</string>
+    <string name="type_4_label">Отключен</string>
+    <string name="type_5_label">неизвестный</string>
+    
+    <string name="action_settings">настройки</string>
+    <string name="settings_alert">Бдительные Настройки</string>
+    <string name="settings_vibrator">вибратор</string>
+    <string name="settings_off">от</string>
+    <string name="settings_long">долго</string>
+    <string name="settings_light">свет</string>
+    <string name="settings_fast">быстро</string>
+    <string name="settings_sound">звук</string>
+    <string name="settings_on">на</string>
+
+</resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Интернет Status Monitor</string>
+    <string name="app_name">Монитор Интернет Статус</string>
     <string name="url_label">URL Запрос</string>
     <string name="interval_label">Проверьте Frquency</string>
     <string name="interval_0_label">низкий</string>

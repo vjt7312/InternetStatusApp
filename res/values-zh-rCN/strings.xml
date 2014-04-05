@@ -32,7 +32,6 @@
     <string name="stat_ok_label">确定</string>
     <string name="stat_cancel_label">取消</string>
 
-    <!-- pro -->
     <string name="ntw_type_label">网络类型:</string>
     <string name="ntw_state_label">网络状态:</string>
     <string name="ntw_roam_label">漫游:</string>
@@ -57,5 +56,14 @@
     <string name="settings_fast">快</string>
     <string name="settings_sound">声音</string>
     <string name="settings_on">开</string>
+    
+    <!-- pro -->
+    <string name="settings_network">网路设定</string>
+    <string name="settings_thre_latency">网路不佳判定:</string>
+    <string name="settings_thre_latency_desc">判定网路不佳参数(低更容易显示网路不佳):</string>
+    <string name="settings_thre_high">高流量判定:</string>
+    <string name="settings_thre_high_desc">判定高流量参数:</string>
+    <string name="settings_low">低</string>
+    <string name="settings_high">高</string>
 
 </resources>

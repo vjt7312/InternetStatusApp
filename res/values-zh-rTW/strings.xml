@@ -32,7 +32,6 @@
     <string name="stat_ok_label">確定</string>
     <string name="stat_cancel_label">取消</string>
 
-    <!-- pro -->
     <string name="ntw_type_label">網路類型:</string>
     <string name="ntw_state_label">網路狀態:</string>
     <string name="ntw_roam_label">漫遊:</string>
@@ -57,5 +56,14 @@
     <string name="settings_fast">快</string>
     <string name="settings_sound">聲音</string>
     <string name="settings_on">開</string>
+    
+    <!-- pro -->
+    <string name="settings_network">網路設定</string>
+    <string name="settings_thre_latency">網路不佳判定:</string>
+    <string name="settings_thre_latency_desc">判定網路不佳參數 (低更容易顯示網路不佳):</string>
+    <string name="settings_thre_high">高流量判定:</string>
+    <string name="settings_thre_high_desc">判定高流量參數:</string>
+    <string name="settings_low">低</string>
+    <string name="settings_high">高</string>
 
 </resources>

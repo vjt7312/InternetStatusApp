@@ -32,7 +32,6 @@
     <string name="stat_ok_label">決定する</string>
     <string name="stat_cancel_label">キャンセル</string>
 
-    <!-- pro -->
     <string name="ntw_type_label">ネットワークタイプ：</string>
     <string name="ntw_state_label">ネットワーク状態：</string>
     <string name="ntw_roam_label">ローミング： </string>
@@ -57,5 +56,14 @@
     <string name="settings_fast">速い</string>
     <string name="settings_sound">サウンド</string>
     <string name="settings_on">オープン</string>
+    
+    <!-- pro -->
+    <string name="settings_network">ネットワーク設定</string>
+    <string name="settings_thre_latency">決定するために、貧しい人々のネットワーク:</string>
+    <string name="settings_thre_latency_desc">悪いの判断のネットワークパラメータ (低ネットワークに簡単劣悪表示できます):</string>
+    <string name="settings_thre_high">高流量測定:</string>
+    <string name="settings_thre_high_desc">高トラフィックパラメータを決定します:</string>
+    <string name="settings_low">低い</string>
+    <string name="settings_high">高い</string>
 
 </resources>

@@ -69,7 +69,6 @@ public class InternetService extends Service {
 	private static final int TRAFFIC_HIGH = 2;
 
 	private static final int NET_STAT_INTERVAL = 1000;
-	private static final int NET_STAT_HIGH_THRESHOLD = 1024 * 512;
 
 	private static final int NOTIFICATIONID = 7696;
 	public static final int ALERTUPID = 7697;
@@ -246,6 +245,48 @@ public class InternetService extends Service {
 		return settings.getInt("settings_sound", 0);
 	}
 
+	private int getThreLatency() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_thre_late", 2));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.bad_interval_default_0));
+		case 1:
+			return Integer.parseInt(getString(R.string.bad_interval_default_1));
+		case 2:
+			return Integer.parseInt(getString(R.string.bad_interval_default_2));
+		case 3:
+			return Integer.parseInt(getString(R.string.bad_interval_default_3));
+		case 4:
+			return Integer.parseInt(getString(R.string.bad_interval_default_4));
+		default:
+			return 600;
+		}
+	}
+
+	private int getThreHigh() {
+		final SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int f = (settings.getInt("settings_thre_high", 2));
+		switch (f) {
+		case 0:
+			return Integer.parseInt(getString(R.string.high_traffic_default_0)) * 1024;
+		case 1:
+			return Integer.parseInt(getString(R.string.high_traffic_default_1)) * 1024;
+		case 2:
+			return Integer.parseInt(getString(R.string.high_traffic_default_2)) * 1024;
+		case 3:
+			return Integer.parseInt(getString(R.string.high_traffic_default_3)) * 1024;
+		case 4:
+			return Integer.parseInt(getString(R.string.high_traffic_default_4)) * 1024;
+		default:
+			return 512 * 1024;
+		}
+	}
+
 	private void setupAlert(boolean isUp, int limit) {
 		String ns = Context.NOTIFICATION_SERVICE;
 		int icon;
@@ -399,8 +440,8 @@ public class InternetService extends Service {
 			try {
 				synchronized (this) {
 					serviceState = STATE_WAITING;
-					mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT, Integer
-							.valueOf(getString(R.string.bad_interval_default)));
+					mHandler.sendEmptyMessageDelayed(MSG_CHECK_TIMEOUT,
+							getThreLatency());
 
 					addr = InetAddress.getByName(params[0]);
 					serviceState = STATE_NONE;
@@ -878,8 +919,7 @@ public class InternetService extends Service {
 
 			if (mRxSec == 0 && mTxSec == 0) {
 				mTrafficStatus = TRAFFIC_NONE;
-			} else if (mRxSec >= NET_STAT_HIGH_THRESHOLD
-					|| mTxSec >= NET_STAT_HIGH_THRESHOLD) {
+			} else if (mRxSec >= getThreHigh() || mTxSec >= getThreHigh()) {
 				mTrafficStatus = TRAFFIC_HIGH;
 			} else {
 				mTrafficStatus = TRAFFIC_LOW;

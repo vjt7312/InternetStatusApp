@@ -32,7 +32,6 @@
     <string name="stat_ok_label">хорошо</string>
     <string name="stat_cancel_label">отменить</string>
 
-    <!-- pro -->
     <string name="ntw_type_label">Тип сети:</string>
     <string name="ntw_state_label">Состояние сети:</string>
     <string name="ntw_roam_label">Роуминг:</string>
@@ -57,5 +56,14 @@
     <string name="settings_fast">быстро</string>
     <string name="settings_sound">звук</string>
     <string name="settings_on">на</string>
+    
+    <!-- pro -->
+    <string name="settings_network">Параметры сети</string>
+    <string name="settings_thre_latency">Задержка Порог:</string>
+    <string name="settings_thre_latency_desc">Параметр для определения плохой задержки (Нижний проще показать плохую латентность):</string>
+    <string name="settings_thre_high">Высокий трафик Порог:</string>
+    <string name="settings_thre_high_desc">Параметр для определения высокий трафик данных:</string>
+    <string name="settings_low">низкий</string>
+    <string name="settings_high">высокий</string>
 
 </resources>

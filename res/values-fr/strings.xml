@@ -32,7 +32,6 @@
     <string name="stat_ok_label">bien</string>
     <string name="stat_cancel_label">annuler</string>
 
-    <!-- pro -->
     <string name="ntw_type_label">Type de réseau:</string>
     <string name="ntw_state_label">État du réseau:</string>
     <string name="ntw_roam_label">roaming:</string>
@@ -57,5 +56,14 @@
     <string name="settings_fast">rapide</string>
     <string name="settings_sound">son</string>
     <string name="settings_on">sur</string>
+    
+    <!-- pro -->
+    <string name="settings_network">Paramètres réseau</string>
+    <string name="settings_thre_latency">Seuil de latence:</string>
+    <string name="settings_thre_latency_desc">Paramètre de déterminer la mauvaise latence (Le inférieure plus facile à démontrer la mauvaise latence):</string>
+    <string name="settings_thre_high">Seuil Haut du trafic:</string>
+    <string name="settings_thre_high_desc">Paramètre pour déterminer le trafic de données élevé:</string>
+    <string name="settings_low">faible</string>
+    <string name="settings_high">haut</string>
 
 </resources>

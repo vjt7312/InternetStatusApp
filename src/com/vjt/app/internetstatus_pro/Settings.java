@@ -11,6 +11,8 @@ public class Settings extends Activity {
 	SeekBar mVibrator;
 	SeekBar mLight;
 	SeekBar mSound;
+	SeekBar mThreLatency;
+	SeekBar mThreHighTraf;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,8 @@ public class Settings extends Activity {
 		mVibrator = (SeekBar) findViewById(R.id.vibrator);
 		mLight = (SeekBar) findViewById(R.id.light);
 		mSound = (SeekBar) findViewById(R.id.sound);
+		mThreLatency = (SeekBar) findViewById(R.id.thre_latency);
+		mThreHighTraf = (SeekBar) findViewById(R.id.thre_high);
 
 		mVibrator
 				.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -79,11 +83,53 @@ public class Settings extends Activity {
 				editor.commit();
 			}
 		});
+		mThreLatency
+				.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					@Override
+					public void onStopTrackingTouch(SeekBar arg0) {
+					}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar arg0) {
+					}
+
+					@Override
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+						final SharedPreferences settings = PreferenceManager
+								.getDefaultSharedPreferences(Settings.this);
+						final SharedPreferences.Editor editor = settings.edit();
+						editor.putInt("settings_thre_late", progress);
+						editor.commit();
+					}
+				});
+		mThreHighTraf
+				.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+					@Override
+					public void onStopTrackingTouch(SeekBar arg0) {
+					}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar arg0) {
+					}
+
+					@Override
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+						final SharedPreferences settings = PreferenceManager
+								.getDefaultSharedPreferences(Settings.this);
+						final SharedPreferences.Editor editor = settings.edit();
+						editor.putInt("settings_thre_high", progress);
+						editor.commit();
+					}
+				});
 
 		final SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(Settings.this);
 		mVibrator.setProgress(settings.getInt("settings_vibrator", 1));
 		mLight.setProgress(settings.getInt("settings_light", 1));
 		mSound.setProgress(settings.getInt("settings_sound", 0));
+		mThreLatency.setProgress(settings.getInt("settings_thre_late", 2));
+		mThreHighTraf.setProgress(settings.getInt("settings_thre_high", 2));
 	}
 }
